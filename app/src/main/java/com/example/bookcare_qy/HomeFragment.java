@@ -90,7 +90,7 @@ public class HomeFragment extends Fragment {
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setHasFixedSize(false);
         recyclerView.setNestedScrollingEnabled(true);
-        adapter = new HomeBookAdapter();
+        adapter = new HomeBookAdapter(this);
         recyclerView.setAdapter(adapter);
 
         // Initial load

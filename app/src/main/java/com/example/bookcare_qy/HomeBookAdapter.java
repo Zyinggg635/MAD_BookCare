@@ -7,6 +7,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,11 @@ import java.util.List;
 public class HomeBookAdapter extends RecyclerView.Adapter<HomeBookAdapter.BookHolder> {
 
     private final List<Book> books = new ArrayList<>();
+    private final Fragment fragment;
+
+    public HomeBookAdapter(Fragment fragment) {
+        this.fragment = fragment;
+    }
 
     public void submitList(List<Book> newBooks) {
         books.clear();
@@ -44,6 +50,16 @@ public class HomeBookAdapter extends RecyclerView.Adapter<HomeBookAdapter.BookHo
         int color = ContextCompat.getColor(holder.statusChip.getContext(),
                 isDonate ? android.R.color.holo_red_dark : android.R.color.holo_green_dark);
         holder.statusChip.setTextColor(color);
+
+        // Set click listener to navigate to detail view
+        holder.card.setOnClickListener(v -> {
+            if (fragment != null && fragment.getParentFragmentManager() != null) {
+                fragment.getParentFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, ViewBookDetailFragment.newInstance(book))
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
     }
 
     @Override

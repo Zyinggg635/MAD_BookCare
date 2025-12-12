@@ -65,14 +65,9 @@ public class My_Listings extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         getParentFragmentManager().setFragmentResultListener("newBook", getViewLifecycleOwner(), (requestKey, bundle) -> {
-            String title = bundle.getString("title");
-            String author = bundle.getString("author");
-            String status = bundle.getString("status");
-
-            Book newBook = new Book(title, author, status, 0, 0, "You");
-            BookRepository.addBook(newBook);
-            adapter.addBook(newBook);
+            // Book is already added to repository in Add_New_Book, just refresh the adapter
             if (adapter != null) {
+                adapter.setBooks(new ArrayList<>(BookRepository.getBooks()));
                 adapter.notifyDataSetChanged();
             }
             updateSubtitle();

@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -27,12 +28,23 @@ public class Add_New_Book extends Fragment {
         return fragment;
     }
 
+    public static Add_New_Book newExchangeOnlyInstance() {
+        Add_New_Book fragment = new Add_New_Book();
+        Bundle args = new Bundle();
+        args.putBoolean("forceExchange", true);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_add__new__book, container, false);
+
+        final boolean forceExchange = getArguments() != null
+                && getArguments().getBoolean("forceExchange", false);
 
         // --- BACK BUTTON ---
         ImageButton btnBack = view.findViewById(R.id.BtnLeftArrow);
@@ -61,6 +73,11 @@ public class Add_New_Book extends Fragment {
         tvDonateSubtitle.setText("Give away for free");
 
         rbExchange.setChecked(true); // default
+        if (forceExchange) {
+            rbDonate.setEnabled(false);
+            cardDonate.setEnabled(false);
+            cardDonate.setAlpha(0.4f);
+        }
 
         // Make the whole card clickable
         cardExchange.setOnClickListener(v -> {
@@ -79,7 +96,14 @@ public class Add_New_Book extends Fragment {
         btnAddBook.setOnClickListener(v -> {
             String title = ((EditText) view.findViewById(R.id.ETBookTitle)).getText().toString();
             String author = ((EditText) view.findViewById(R.id.ETAuthor)).getText().toString();
-            String status = rbExchange.isChecked() ? "Exchange" : "Donate";
+            String status = forceExchange ? "Exchange" : (rbExchange.isChecked() ? "Exchange" : "Donate");
+            String description = ((EditText) view.findViewById(R.id.ETDescription)).getText().toString();
+            
+            Spinner genreSpinner = view.findViewById(R.id.SPGenre);
+            String genre = genreSpinner.getSelectedItem() != null ? genreSpinner.getSelectedItem().toString() : "";
+            
+            Spinner conditionSpinner = view.findViewById(R.id.SPCondition);
+            String condition = conditionSpinner.getSelectedItem() != null ? conditionSpinner.getSelectedItem().toString() : "";
 
             // send book info to My_Listings
             Bundle result = new Bundle();
@@ -87,7 +111,7 @@ public class Add_New_Book extends Fragment {
             result.putString("author", author);
             result.putString("status", status);
             getParentFragmentManager().setFragmentResult("newBook", result);
-            BookRepository.addBook(new Book(title, author, status, 0, 0, "You"));
+            BookRepository.addBook(new Book(title, author, status, 0, 0, "You", description, genre, condition));
 
             // Go to BookAddedFragment
             getParentFragmentManager().beginTransaction()

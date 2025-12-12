@@ -1,12 +1,17 @@
 package com.example.bookcare_qy;
 
-public class Book {
+import java.io.Serializable;
+
+public class Book implements Serializable {
     private String title;
     private String author;
     private String status;
     private int views;
     private int interested;
     private String uploadedBy;
+    private String description;
+    private String genre;
+    private String condition;
 
     public Book() { } // required for Firebase
 
@@ -15,12 +20,19 @@ public class Book {
     }
 
     public Book(String title, String author, String status, int views, int interested, String uploadedBy) {
+        this(title, author, status, views, interested, uploadedBy, "", "", "");
+    }
+
+    public Book(String title, String author, String status, int views, int interested, String uploadedBy, String description, String genre, String condition) {
         this.title = title;
         this.author = author;
         this.status = status;
         this.views = views;
         this.interested = interested;
         this.uploadedBy = uploadedBy;
+        this.description = description;
+        this.genre = genre;
+        this.condition = condition;
     }
 
     // getters and setters
@@ -41,4 +53,13 @@ public class Book {
 
     public String getUploadedBy() { return uploadedBy; }
     public void setUploadedBy(String uploadedBy) { this.uploadedBy = uploadedBy; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
+    public String getGenre() { return genre; }
+    public void setGenre(String genre) { this.genre = genre; }
+
+    public String getCondition() { return condition; }
+    public void setCondition(String condition) { this.condition = condition; }
 }
