@@ -87,6 +87,7 @@ public class Add_New_Book extends Fragment {
             result.putString("author", author);
             result.putString("status", status);
             getParentFragmentManager().setFragmentResult("newBook", result);
+            BookRepository.addBook(new Book(title, author, status, 0, 0, "You"));
 
             // Go to BookAddedFragment
             getParentFragmentManager().beginTransaction()

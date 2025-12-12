@@ -81,4 +81,12 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
             listener.onBooksChanged(books.size());
         }
     }
+
+    public void setBooks(List<Book> updated) {
+        this.books = updated;
+        notifyDataSetChanged();
+        if (listener != null) {
+            listener.onBooksChanged(books.size());
+        }
+    }
 }

@@ -16,8 +16,6 @@ import java.util.ArrayList;
 
 public class My_Listings extends Fragment {
 
-    // Make books static so the list persists across fragment recreation
-    private static ArrayList<Book> books = new ArrayList<>();
     private BookAdapter adapter;
     private TextView tvSubTitle;
 
@@ -37,6 +35,8 @@ public class My_Listings extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_my__listings, container, false);
 
+        BookRepository.seedIfEmpty();
+
         tvSubTitle = view.findViewById(R.id.tvSubTitle);
         updateSubtitle();
 
@@ -54,7 +54,7 @@ public class My_Listings extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.rvBooks);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        adapter = new BookAdapter(books, count -> updateSubtitle());
+        adapter = new BookAdapter(new ArrayList<>(BookRepository.getBooks()), count -> updateSubtitle());
         recyclerView.setAdapter(adapter);
 
         return view;
@@ -69,8 +69,9 @@ public class My_Listings extends Fragment {
             String author = bundle.getString("author");
             String status = bundle.getString("status");
 
-            Book newBook = new Book(title, author, status, 0, 0);
-            books.add(newBook);
+            Book newBook = new Book(title, author, status, 0, 0, "You");
+            BookRepository.addBook(newBook);
+            adapter.addBook(newBook);
             if (adapter != null) {
                 adapter.notifyDataSetChanged();
             }
@@ -78,9 +79,18 @@ public class My_Listings extends Fragment {
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (adapter != null) {
+            adapter.setBooks(new ArrayList<>(BookRepository.getBooks()));
+        }
+        updateSubtitle();
+    }
+
     private void updateSubtitle() {
         if (tvSubTitle != null) {
-            tvSubTitle.setText(books.size() + " books listed");
+            tvSubTitle.setText(BookRepository.getBooks().size() + " books listed");
         }
     }
 }

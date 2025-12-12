@@ -6,15 +6,21 @@ public class Book {
     private String status;
     private int views;
     private int interested;
+    private String uploadedBy;
 
     public Book() { } // required for Firebase
 
     public Book(String title, String author, String status, int views, int interested) {
+        this(title, author, status, views, interested, "");
+    }
+
+    public Book(String title, String author, String status, int views, int interested, String uploadedBy) {
         this.title = title;
         this.author = author;
         this.status = status;
         this.views = views;
         this.interested = interested;
+        this.uploadedBy = uploadedBy;
     }
 
     // getters and setters
@@ -32,4 +38,7 @@ public class Book {
 
     public int getInterested() { return interested; }
     public void setInterested(int interested) { this.interested = interested; }
+
+    public String getUploadedBy() { return uploadedBy; }
+    public void setUploadedBy(String uploadedBy) { this.uploadedBy = uploadedBy; }
 }
