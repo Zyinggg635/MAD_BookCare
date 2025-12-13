@@ -11,23 +11,18 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-//haha//
-
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 public class Add_New_Book extends Fragment {
 
+    private BookRepository bookRepository;
+
     public Add_New_Book() { }
 
     public static Add_New_Book newInstance(String param1, String param2) {
-        Add_New_Book fragment = new Add_New_Book();
-        Bundle args = new Bundle();
-        args.putString("param1", param1);
-        args.putString("param2", param2);
-        fragment.setArguments(args);
-        return fragment;
+        return new Add_New_Book();
     }
 
     public static Add_New_Book newExchangeOnlyInstance() {
@@ -44,6 +39,8 @@ public class Add_New_Book extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_add__new__book, container, false);
+
+        bookRepository = new BookRepository();
 
         final boolean forceExchange = getArguments() != null
                 && getArguments().getBoolean("forceExchange", false);
@@ -99,27 +96,12 @@ public class Add_New_Book extends Fragment {
             String title = ((EditText) view.findViewById(R.id.ETBookTitle)).getText().toString();
             String author = ((EditText) view.findViewById(R.id.ETAuthor)).getText().toString();
             String status = forceExchange ? "Exchange" : (rbExchange.isChecked() ? "Exchange" : "Donate");
-            String description = ((EditText) view.findViewById(R.id.ETDescription)).getText().toString();
-
-            Spinner genreSpinner = view.findViewById(R.id.SPGenre);
-            String genre = genreSpinner.getSelectedItem() != null ? genreSpinner.getSelectedItem().toString() : "";
 
             Spinner conditionSpinner = view.findViewById(R.id.SPCondition);
             String condition = conditionSpinner.getSelectedItem() != null ? conditionSpinner.getSelectedItem().toString() : "";
 
-            // send book info to My_Listings
-            Bundle result = new Bundle();
-            result.putString("title", title);
-            result.putString("author", author);
-            result.putString("status", status);
-            getParentFragmentManager().setFragmentResult("newBook", result);
-            BookRepository.addBook(new Book(title, author, status, 0, 0, "You", description, genre, condition));
-
-            // Add 1 credit if this is an exchange book
-            if ("Exchange".equalsIgnoreCase(status)) {
-                CreditManager creditManager = new CreditManager(requireContext());
-                creditManager.addCredits(1);
-            }
+            Book newBook = new Book(null, title, author, condition, status);
+            bookRepository.addBook(newBook);
 
             // Go to BookAddedFragment
             getParentFragmentManager().beginTransaction()

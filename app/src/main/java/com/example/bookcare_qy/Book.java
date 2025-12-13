@@ -1,67 +1,66 @@
-package com.example.bookcare_qy;
+package com.example.bookcare_qy; // Make sure this matches your package name
 
 import java.io.Serializable;
 
-//hha
-
 public class Book implements Serializable {
-    private String title;
-    private String author;
-    private String status;
-    private int views;
-    private int interested;
-    private String uploadedBy;
-    private String description;
-    private String genre;
-    private String condition;
+    public String id;
+    public String title;
+    public String author;
+    public String condition;
+    public String type;
 
-    public Book() { } // required for Firebase
-
-    public Book(String title, String author, String status, int views, int interested) {
-        this(title, author, status, views, interested, "");
+    // Default constructor required for calls to DataSnapshot.getValue(Book.class)
+    public Book() {
     }
 
-    public Book(String title, String author, String status, int views, int interested, String uploadedBy) {
-        this(title, author, status, views, interested, uploadedBy, "", "", "");
-    }
-
-    public Book(String title, String author, String status, int views, int interested, String uploadedBy, String description, String genre, String condition) {
+    public Book(String id, String title, String author, String condition, String type) {
+        this.id = id;
         this.title = title;
         this.author = author;
-        this.status = status;
-        this.views = views;
-        this.interested = interested;
-        this.uploadedBy = uploadedBy;
-        this.description = description;
-        this.genre = genre;
+        this.condition = condition;
+        this.type = type;
+    }
+
+    // --- Getters and Setters for all fields ---
+    // Firebase requires public getters and setters for fields it maps to objects.
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getCondition() {
+        return condition;
+    }
+
+    public void setCondition(String condition) {
         this.condition = condition;
     }
 
-    // getters and setters
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
+    public String getType() {
+        return type;
+    }
 
-    public String getAuthor() { return author; }
-    public void setAuthor(String author) { this.author = author; }
-
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-
-    public int getViews() { return views; }
-    public void setViews(int views) { this.views = views; }
-
-    public int getInterested() { return interested; }
-    public void setInterested(int interested) { this.interested = interested; }
-
-    public String getUploadedBy() { return uploadedBy; }
-    public void setUploadedBy(String uploadedBy) { this.uploadedBy = uploadedBy; }
-
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-
-    public String getGenre() { return genre; }
-    public void setGenre(String genre) { this.genre = genre; }
-
-    public String getCondition() { return condition; }
-    public void setCondition(String condition) { this.condition = condition; }
+    public void setType(String type) {
+        this.type = type;
+    }
 }

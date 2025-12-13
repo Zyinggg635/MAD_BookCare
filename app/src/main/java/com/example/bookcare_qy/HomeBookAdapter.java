@@ -12,8 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-//haha
-
 public class HomeBookAdapter extends RecyclerView.Adapter<HomeBookAdapter.BookHolder> {
 
     private final List<Book> books = new ArrayList<>();
@@ -42,13 +40,13 @@ public class HomeBookAdapter extends RecyclerView.Adapter<HomeBookAdapter.BookHo
         Book book = books.get(position);
         holder.title.setText(book.getTitle());
         holder.author.setText(book.getAuthor());
-        String uploader = book.getUploadedBy();
-        if (uploader == null || uploader.isEmpty()) {
-            uploader = "Unknown user";
-        }
-        holder.username.setText(uploader);
-        holder.statusChip.setText(book.getStatus());
-        boolean isDonate = "Donate".equalsIgnoreCase(book.getStatus());
+
+        // The getUploadedBy() method no longer exists in the new Book model.
+        // We will hide the username field for now.
+        holder.username.setVisibility(View.GONE);
+
+        holder.statusChip.setText(book.getType());
+        boolean isDonate = "Donate".equalsIgnoreCase(book.getType());
         int color = ContextCompat.getColor(holder.statusChip.getContext(),
                 isDonate ? android.R.color.holo_red_dark : android.R.color.holo_green_dark);
         holder.statusChip.setTextColor(color);
@@ -86,4 +84,3 @@ public class HomeBookAdapter extends RecyclerView.Adapter<HomeBookAdapter.BookHo
         }
     }
 }
-

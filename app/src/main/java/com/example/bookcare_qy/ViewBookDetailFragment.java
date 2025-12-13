@@ -14,8 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-//haha
-
 public class ViewBookDetailFragment extends Fragment {
 
     private static final String ARG_BOOK = "book";
@@ -63,33 +61,25 @@ public class ViewBookDetailFragment extends Fragment {
             tvTitle.setText(book.getTitle() != null ? book.getTitle() : "Unknown Title");
             tvAuthor.setText(book.getAuthor() != null ? "by " + book.getAuthor() : "by Unknown Author");
 
-            // Use condition field if available, otherwise use status
             String conditionText = book.getCondition() != null && !book.getCondition().isEmpty()
-                    ? book.getCondition() : (book.getStatus() != null ? book.getStatus() : "Available");
+                    ? book.getCondition() : (book.getType() != null ? book.getType() : "Available");
             tvCondition.setText(conditionText);
 
-            // Use actual description from book, or default if empty
-            String description = book.getDescription() != null && !book.getDescription().isEmpty()
-                    ? book.getDescription()
-                    : "A great book in excellent condition. Perfect for reading and sharing with others.";
+            String description = "A great book in excellent condition. Perfect for reading and sharing with others.";
             tvDescription.setText(description);
 
-            // Owner info - using uploadedBy as owner name, default phone
-            String ownerName = book.getUploadedBy() != null && !book.getUploadedBy().isEmpty()
-                    ? book.getUploadedBy() : "Unknown User";
+            String ownerName = "Unknown User";
             tvOwnerName.setText(ownerName);
             tvOwnerPhone.setText("+60 12-345 6789"); // Default phone, can be extended later
 
-            // Update button text based on book status
-            if ("Donate".equalsIgnoreCase(book.getStatus())) {
+            if ("Donate".equalsIgnoreCase(book.getType())) {
                 btnRequest.setText("Request Donation");
             } else {
                 btnRequest.setText("Request Exchange");
             }
 
-            // Request button click - handle exchange/donation request
             btnRequest.setOnClickListener(v -> {
-                if ("Exchange".equalsIgnoreCase(book.getStatus())) {
+                if ("Exchange".equalsIgnoreCase(book.getType())) {
                     handleExchangeRequest();
                 } else {
                     handleDonationRequest();
@@ -103,18 +93,16 @@ public class ViewBookDetailFragment extends Fragment {
     private void handleExchangeRequest() {
         CreditManager creditManager = new CreditManager(requireContext());
 
-        // Check if user has enough credits
         if (!creditManager.hasEnoughCredits(1)) {
             showInsufficientCreditsDialog();
             return;
         }
 
-        // Deduct 1 credit and proceed with exchange
         if (creditManager.deductCredits(1)) {
-            // Remove the book from the repository after successful exchange
-            if (book != null) {
-                BookRepository.removeBook(book);
-            }
+            // if (book != null) {
+                // TODO: Implement book removal logic in the new BookRepository
+                // BookRepository.removeBook(book);
+            // }
             showExchangeDoneDialog();
         } else {
             showInsufficientCreditsDialog();
@@ -122,7 +110,6 @@ public class ViewBookDetailFragment extends Fragment {
     }
 
     private void handleDonationRequest() {
-        // Donations don't require credits
         showExchangeDoneDialog();
     }
 
@@ -172,7 +159,6 @@ public class ViewBookDetailFragment extends Fragment {
 
         btnClose.setOnClickListener(v -> {
             dialog.dismiss();
-            // Navigate back to home fragment to see updated list
             getParentFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, HomeFragment.newInstance())
                     .commit();

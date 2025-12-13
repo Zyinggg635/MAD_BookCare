@@ -1,80 +1,70 @@
-package com.example.bookcare_qy;
+package com.example.bookcare_qy; // Make sure this matches your package name
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import androidx.annotation.NonNull;
 
-//haha
+public class BookRepository {
 
-/**
- * Simple in-memory store to share books across screens until Firebase is added.
- */
-public final class BookRepository {
+    private DatabaseReference booksRef;
 
-    private static final ArrayList<Book> books = new ArrayList<>();
-
-    private BookRepository() { }
-
-    public static List<Book> getBooks() {
-        return Collections.unmodifiableList(books);
-    }
-
-    public static void addBook(Book book) {
-        books.add(book);
+    public BookRepository() {
+        // Get a reference to your Realtime Database instance
+        FirebaseDatabase database = FirebaseDatabase.getInstance("https://bookcare-82eb6-default-rtdb.asia-southeast1.firebasedatabase.app");
+        // Get a reference to the "books" node where all books will be stored
+        booksRef = database.getReference("books");
     }
 
     /**
-     * Remove a book from the repository.
-     * Matches by title, author, and uploadedBy to ensure correct removal.
+     * Adds a new book to the Firebase Realtime Database.
+     * A unique ID is generated for the new book.
+     *
+     * @param book The Book object to add. The 'id' field of this object
+     *             will be updated with the generated Firebase key.
      */
-    public static boolean removeBook(Book book) {
-        if (book == null) {
-            return false;
+    public void addBook(Book book) {
+        // Generate a unique key for the new book entry
+        String newBookId = booksRef.push().getKey();
+
+        if (newBookId != null) {
+            // Set the generated ID to the book object
+            book.setId(newBookId);
+
+            // Write the book object to the database under the new unique ID
+            booksRef.child(newBookId).setValue(book)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            System.out.println("Book added successfully with ID: " + book.getId());
+                            // TODO: Add logic here for successful addition (e.g., show a toast, navigate back)
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            System.err.println("Error adding book: " + e.getMessage());
+                            // TODO: Add logic here for failed addition (e.g., show an error message)
+                        }
+                    });
+        } else {
+            System.err.println("Failed to generate a new book ID.");
+            // TODO: Handle scenario where key generation fails
         }
-
-        String title = book.getTitle();
-        String author = book.getAuthor();
-        String uploadedBy = book.getUploadedBy();
-
-        for (int i = 0; i < books.size(); i++) {
-            Book b = books.get(i);
-            boolean titleMatch = (title == null && b.getTitle() == null) ||
-                    (title != null && title.equals(b.getTitle()));
-            boolean authorMatch = (author == null && b.getAuthor() == null) ||
-                    (author != null && author.equals(b.getAuthor()));
-            boolean uploadedByMatch = (uploadedBy == null && b.getUploadedBy() == null) ||
-                    (uploadedBy != null && uploadedBy.equals(b.getUploadedBy()));
-
-            if (titleMatch && authorMatch && uploadedByMatch) {
-                books.remove(i);
-                return true;
-            }
-        }
-        return false;
     }
 
-    public static void seedIfEmpty() {
-        if (!books.isEmpty()) {
-            return;
-        }
-
-        books.add(new Book("The Midnight Library", "Matt Haig", "Exchange", 12, 3, "hannah",
-                "A thought-provoking novel that explores the infinite possibilities of life. Perfect condition, well-maintained pages, no markings or damage. A must-read for anyone interested in philosophical fiction.",
-                "Fiction", "Like New"));
-        books.add(new Book("Atomic Habits", "James Clear", "Exchange", 28, 9, "amir",
-                "An easy and proven way to build good habits and break bad ones. Tiny changes that make a remarkable difference. The book is in excellent condition with no highlights or notes.",
-                "Non-fiction", "Good"));
-        books.add(new Book("The Two Towers", "J.R.R. Tolkien", "Donate", 8, 2, "samwise",
-                "The second volume of The Lord of the Rings. Classic fantasy literature. Book is in good reading condition, some wear on the cover but pages are intact.",
-                "Fantasy", "Good"));
-        books.add(new Book("The Obstacle Is The Way", "Ryan Holiday", "Exchange", 16, 4, "marcus",
-                "The timeless art of turning trials into triumph. A practical guide to stoic philosophy. Book is like new, barely read.",
-                "Non-fiction", "Like New"));
-        books.add(new Book("You Are What You Risk", "Michele Wucker", "Donate", 6, 1, "grace",
-                "A fascinating exploration of how we assess, communicate, and make decisions about risk. Free book for anyone interested in psychology and decision-making.",
-                "Non-fiction", "Fair"));
-        books.add(new Book("The Psychology of Money", "Morgan Housel", "Exchange", 31, 12, "alex",
-                "Timeless lessons on wealth, greed, and happiness. Short stories about doing well with money. Excellent condition, no marks or highlights.",
-                "Non-fiction", "Like New"));
+    // Example of how you might call addBook from an Activity or Fragment
+    // For instance, when a user clicks a "Save Book" button:
+    public void saveNewBookExample() {
+        // Create a new Book object from user input
+        Book newBook = new Book(
+            null, // ID will be set by Firebase
+            "The Mystery of the Old House",
+            "B. Author",
+            "Used - Good",
+            "Donate"
+        );
+        addBook(newBook);
     }
 }
