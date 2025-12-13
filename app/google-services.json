@@ -1,29 +1,20 @@
-{
-  "project_info": {
-    "project_number": "835167927544",
-    "project_id": "bookcareqy",
-    "storage_bucket": "bookcareqy.firebasestorage.app"
-  },
-  "client": [
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:835167927544:android:4de9f05c6e82db43008f0d",
-        "android_client_info": {
-          "package_name": "com.example.bookcare_qy"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBUtGX9pzRoR8tnChVqcIJ7SWrRRVn9L2g"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    }
-  ],
-  "configuration_version": "1"
-}
+
+## Firebase Setup (Critical Steps)
+
+To run this project, you **must** connect it to your own Firebase backend. Follow these steps carefully.
+
+### 1. Create a Firebase Project
+
+*   Go to the [Firebase Console](https://console.firebase.google.com/).
+*   Click **"Add project"** and follow the on-screen instructions to create a new project.
+
+### 2. Add an Android App to Your Project
+
+*   Inside your new Firebase project, click the Android icon ( `</>` ) to add an Android app.
+*   **Android package name**: This is the most important step. The package name you enter here **must** match the `applicationId` in the `app/build.gradle.kts` file. For this project, use:
+    *   `com.example.bookcare`
+*   **App nickname** (Optional): Give your app a memorable name (e.g., "Community Forum App").
+*   **Debug signing certificate SHA-1** (Optional): You can skip this for now.
+*   Click **"Register app"**.
+
+### 3. Download and Place the `google-services.json` File
