@@ -9,9 +9,9 @@
               <option name="connection">
                 <ConnectionSetting>
                   <option name="appId" value="com.example.bookcare_qy" />
-                  <option name="mobileSdkAppId" value="1:835167927544:android:4de9f05c6e82db43008f0d" />
-                  <option name="projectId" value="bookcareqy" />
-                  <option name="projectNumber" value="835167927544" />
+                  <option name="mobileSdkAppId" value="1:230206488560:android:2c071317a7aa770fbfa735" />
+                  <option name="projectId" value="bookcare-82eb6" />
+                  <option name="projectNumber" value="230206488560" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
