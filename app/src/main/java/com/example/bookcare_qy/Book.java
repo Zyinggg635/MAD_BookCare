@@ -2,6 +2,8 @@ package com.example.bookcare_qy;
 
 import java.io.Serializable;
 
+//hha
+
 public class Book implements Serializable {
     private String title;
     private String author;

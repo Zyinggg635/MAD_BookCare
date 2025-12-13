@@ -19,7 +19,7 @@
             android:contentDescription="Close"
             android:scaleType="fitCenter"
             android:src="@drawable/close"
-            android:tint="#FF0000"
+            android:app="#FF0000"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -68,4 +68,6 @@
             tools:text="Your exchange request has been successfully sent!\nFor more information, please contact the owner at: \n📞 +60 1x-xxx xxxx" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--haha-->
 

@@ -3,6 +3,8 @@ package com.example.bookcare_qy;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+//haha
+
 /**
  * Manages user credits for the exchange system.
  * Users earn 1 credit when they add a book for exchange.

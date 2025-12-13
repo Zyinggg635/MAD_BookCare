@@ -8,6 +8,8 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <!--haha-->
+
     <!-- Fragment container for Add Book Fragment -->
     <FrameLayout
         android:id="@+id/fragment_container"

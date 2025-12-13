@@ -26,7 +26,7 @@
         android:contentDescription="Close"
         android:padding="4dp"
         android:src="@drawable/close"
-        android:tint="#FF0000"
+        android:app="#FF0000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -105,3 +105,5 @@
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+<!--haha-->

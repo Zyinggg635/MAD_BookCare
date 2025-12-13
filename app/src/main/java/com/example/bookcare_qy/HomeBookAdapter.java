@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+//haha
+
 public class HomeBookAdapter extends RecyclerView.Adapter<HomeBookAdapter.BookHolder> {
 
     private final List<Book> books = new ArrayList<>();

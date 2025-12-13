@@ -14,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+//haha
+
 public class ViewBookDetailFragment extends Fragment {
 
     private static final String ARG_BOOK = "book";
