@@ -9,7 +9,10 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -39,35 +42,34 @@ public class My_Listings extends Fragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        booksRef = FirebaseDatabase.getInstance("https://bookcare-82eb6-default-rtdb.asia-southeast1.firebasedatabase.app").getReference("books");
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_my__listings, container, false);
+        return inflater.inflate(R.layout.fragment_my__listings, container, false);
+    }
 
-        // Initialize Firebase reference
-        booksRef = FirebaseDatabase.getInstance("https://bookcare-82eb6-default-rtdb.asia-southeast1.firebasedatabase.app").getReference("books");
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         tvSubTitle = view.findViewById(R.id.tvSubTitle);
-
-        // --- Navigation ---
         ImageButton btnBack = view.findViewById(R.id.BtnLeftArrow);
-        btnBack.setOnClickListener(v -> getParentFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, new HomeFragment())
-                .commit());
-
         Button btnAddBook = view.findViewById(R.id.btnAddBook);
-        btnAddBook.setOnClickListener(v -> getParentFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, new Add_New_Book())
-                .addToBackStack(null)
-                .commit());
-
-        // --- RecyclerView Setup ---
         RecyclerView recyclerView = view.findViewById(R.id.rvBooks);
+
+        final NavController navController = Navigation.findNavController(view);
+
+        btnBack.setOnClickListener(v -> navController.navigateUp());
+        btnAddBook.setOnClickListener(v -> navController.navigate(R.id.action_my_Listings_to_add_New_Book));
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        // Initialize adapter with an empty list
         adapter = new BookAdapter(myListings, count -> updateSubtitle());
         recyclerView.setAdapter(adapter);
-
-        return view;
     }
 
     @Override
@@ -79,15 +81,13 @@ public class My_Listings extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 myListings.clear();
-                // NOTE: This fetches ALL books. You'll likely want to filter by the current user's books
-                // once you have user authentication implemented. For now, it will show all books.
                 for (DataSnapshot bookSnapshot : snapshot.getChildren()) {
                     Book book = bookSnapshot.getValue(Book.class);
                     if (book != null) {
                         myListings.add(book);
                     }
                 }
-                adapter.notifyDataSetChanged(); // Notify the adapter that the underlying list has changed
+                adapter.notifyDataSetChanged();
                 updateSubtitle();
                 Log.d(TAG, "onDataChange: Fetched " + myListings.size() + " books.");
             }

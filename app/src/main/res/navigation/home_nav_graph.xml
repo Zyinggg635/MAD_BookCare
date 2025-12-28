@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_nav_graph"
+    app:startDestination="@id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.example.bookcare_qy.UserProfileFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_user_profile">
+
+        <action
+            android:id="@+id/action_navigation_home_to_profileViewFragment"
+            app:destination="@id/profileViewFragment" />
+
+        <action
+            android:id="@+id/action_navigation_home_to_ecoPointsFragment"
+            app:destination="@id/ecoPointsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_explore"
+        android:name="com.example.bookcare_qy.ExploreFragment"
+        android:label="Explore"
+        tools:layout="@layout/fragment_explore" />
+
+    <fragment
+        android:id="@+id/navigation_community"
+        android:name="com.example.bookcare_qy.CommunityFragment"
+        android:label="Community"
+        tools:layout="@layout/fragment_community" />
+
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="com.example.bookcare_qy.SettingsFragment"
+        android:label="Settings"
+        tools:layout="@layout/fragment_settings">
+        <action
+            android:id="@+id/action_navigation_settings_to_profileViewFragment"
+            app:destination="@id/profileViewFragment" />
+        <action
+            android:id="@+id/action_navigation_settings_to_profileEditFragment"
+            app:destination="@id/profileEditFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/ecoPointsFragment"
+        android:name="com.example.bookcare_qy.EcoPointsFragment"
+        android:label="Eco-Points"
+        tools:layout="@layout/fragment_eco_points" />
+
+    <fragment
+        android:id="@+id/profileViewFragment"
+        android:name="com.example.bookcare_qy.ProfileViewFragment"
+        android:label="View Profile"
+        tools:layout="@layout/fragment_profile_view" />
+
+    <fragment
+        android:id="@+id/profileEditFragment"
+        android:name="com.example.bookcare_qy.ProfileEditFragment"
+        android:label="Edit Profile"
+        tools:layout="@layout/fragment_profile_edit" />
+
+</navigation>

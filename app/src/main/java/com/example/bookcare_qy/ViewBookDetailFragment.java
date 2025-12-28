@@ -13,27 +13,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 public class ViewBookDetailFragment extends Fragment {
 
-    private static final String ARG_BOOK = "book";
     private Book book;
 
     public ViewBookDetailFragment() {}
-
-    public static ViewBookDetailFragment newInstance(Book book) {
-        ViewBookDetailFragment fragment = new ViewBookDetailFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(ARG_BOOK, book);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            book = (Book) getArguments().getSerializable(ARG_BOOK);
+            book = getArguments().getParcelable("book");
         }
     }
 
@@ -46,7 +38,7 @@ public class ViewBookDetailFragment extends Fragment {
 
         // Back button
         LinearLayout backNav = view.findViewById(R.id.back_navigation_area);
-        backNav.setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
+        backNav.setOnClickListener(v -> Navigation.findNavController(v).navigateUp());
 
         // Populate book data
         if (book != null) {
@@ -62,7 +54,7 @@ public class ViewBookDetailFragment extends Fragment {
             tvAuthor.setText(book.getAuthor() != null ? "by " + book.getAuthor() : "by Unknown Author");
 
             String conditionText = book.getCondition() != null && !book.getCondition().isEmpty()
-                    ? book.getCondition() : (book.getType() != null ? book.getType() : "Available");
+                    ? book.getCondition() : (book.getGenre() != null ? book.getGenre() : "Available");
             tvCondition.setText(conditionText);
 
             String description = "A great book in excellent condition. Perfect for reading and sharing with others.";
@@ -72,14 +64,14 @@ public class ViewBookDetailFragment extends Fragment {
             tvOwnerName.setText(ownerName);
             tvOwnerPhone.setText("+60 12-345 6789"); // Default phone, can be extended later
 
-            if ("Donate".equalsIgnoreCase(book.getType())) {
+            if ("Donate".equalsIgnoreCase(book.getGenre())) {
                 btnRequest.setText("Request Donation");
             } else {
                 btnRequest.setText("Request Exchange");
             }
 
             btnRequest.setOnClickListener(v -> {
-                if ("Exchange".equalsIgnoreCase(book.getType())) {
+                if ("Exchange".equalsIgnoreCase(book.getGenre())) {
                     handleExchangeRequest();
                 } else {
                     handleDonationRequest();
@@ -99,10 +91,6 @@ public class ViewBookDetailFragment extends Fragment {
         }
 
         if (creditManager.deductCredits(1)) {
-            // if (book != null) {
-                // TODO: Implement book removal logic in the new BookRepository
-                // BookRepository.removeBook(book);
-            // }
             showExchangeDoneDialog();
         } else {
             showInsufficientCreditsDialog();
@@ -159,9 +147,7 @@ public class ViewBookDetailFragment extends Fragment {
 
         btnClose.setOnClickListener(v -> {
             dialog.dismiss();
-            getParentFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, HomeFragment.newInstance())
-                    .commit();
+            Navigation.findNavController(requireView()).navigateUp();
         });
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);

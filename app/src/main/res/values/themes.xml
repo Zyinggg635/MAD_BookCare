@@ -2,8 +2,24 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.Bookcare_qy" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryVariant">@color/colorPrimary</item>
+        <item name="android:windowBackground">@color/app_background</item>
+        <item name="android:colorBackground">@color/app_background</item>
+        <item name="colorSurface">@color/app_background</item>
+        <item name="buttonStyle">@style/AppButton</item>
     </style>
 
     <style name="Theme.Bookcare_qy" parent="Base.Theme.Bookcare_qy" />
+
+    <style name="Theme.Bookcare_qy.Blue" parent="Base.Theme.Bookcare_qy">
+        <item name="android:windowBackground">@color/blue_mode_background</item>
+        <item name="android:colorBackground">@color/blue_mode_background</item>
+        <item name="colorSurface">@color/blue_mode_background</item>
+    </style>
+
+    <style name="AppButton" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/button_color</item>
+        <item name="android:textColor">@color/button_text_color</item>
+    </style>
 </resources>

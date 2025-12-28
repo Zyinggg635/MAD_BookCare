@@ -1,0 +1,16 @@
+<resources>
+    <string-array name="book_genre">
+        <item>Fiction</item>
+        <item>Non-Fiction</item>
+        <item>Science Fiction</item>
+        <item>Fantasy</item>
+        <item>Mystery</item>
+    </string-array>
+
+    <string-array name="condition_type">
+        <item>New</item>
+        <item>Used - Like New</item>
+        <item>Used - Good</item>
+        <item>Used - Fair</item>
+    </string-array>
+</resources>

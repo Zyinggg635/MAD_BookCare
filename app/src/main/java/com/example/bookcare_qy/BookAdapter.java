@@ -56,7 +56,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
         Book book = books.get(position);
         holder.tvTitle.setText(book.getTitle());
         holder.tvAuthor.setText(book.getAuthor());
-        holder.tvStatus.setText(book.getType()); // FIX: Changed getStatus() to getType()
+        holder.tvStatus.setText(book.getGenre()); // FIX: Changed getStatus() to getGenre()
         // holder.tvViews.setText(book.getViews() + " views"); // These methods no longer exist in Book.java
         // holder.tvInterested.setText(book.getInterested() + " interested"); // These methods no longer exist in Book.java
 

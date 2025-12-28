@@ -1,24 +1,59 @@
 package com.example.bookcare_qy; // Make sure this matches your package name
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Book implements Serializable {
+public class Book implements Parcelable {
     public String id;
     public String title;
     public String author;
     public String condition;
-    public String type;
+    public String genre;
 
     // Default constructor required for calls to DataSnapshot.getValue(Book.class)
     public Book() {
     }
 
-    public Book(String id, String title, String author, String condition, String type) {
+    public Book(String id, String title, String author, String condition, String genre) {
         this.id = id;
         this.title = title;
         this.author = author;
         this.condition = condition;
-        this.type = type;
+        this.genre = genre;
+    }
+
+    protected Book(Parcel in) {
+        id = in.readString();
+        title = in.readString();
+        author = in.readString();
+        condition = in.readString();
+        genre = in.readString();
+    }
+
+    public static final Creator<Book> CREATOR = new Creator<Book>() {
+        @Override
+        public Book createFromParcel(Parcel in) {
+            return new Book(in);
+        }
+
+        @Override
+        public Book[] newArray(int size) {
+            return new Book[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(title);
+        dest.writeString(author);
+        dest.writeString(condition);
+        dest.writeString(genre);
     }
 
     // --- Getters and Setters for all fields ---
@@ -56,11 +91,11 @@ public class Book implements Serializable {
         this.condition = condition;
     }
 
-    public String getType() {
-        return type;
+    public String getGenre() {
+        return genre;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setGenre(String genre) {
+        this.genre = genre;
     }
 }

@@ -2,5 +2,15 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="purple_500">#6200EE</color>
+
+    <!-- App Theme Colors -->
+    <color name="colorPrimary">#F7E4DA</color>
+    <color name="colorPrimaryDark">#F7E4DA</color>
+
+    <!-- Add your app's background color here -->
+    <color name="app_background">#BAC4A3</color>
+    <color name="button_color">#F7E4DA</color>
+    <color name="button_text_color">#FF000000</color>
+
+    <color name="blue_mode_background">#B0DEF5</color>
 </resources>

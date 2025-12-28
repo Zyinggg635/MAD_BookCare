@@ -12,8 +12,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 //testing
 //wheweree i pushh
@@ -45,16 +48,23 @@ public class Add_New_Book extends Fragment {
 
         bookRepository = new BookRepository();
 
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
         final boolean forceExchange = getArguments() != null
                 && getArguments().getBoolean("forceExchange", false);
+
+        NavController navController = Navigation.findNavController(view);
 
         // --- BACK BUTTON ---
         ImageButton btnBack = view.findViewById(R.id.BtnLeftArrow);
         Button btnCancel = view.findViewById(R.id.BtnCancel);
 
-        View.OnClickListener goHome = v -> getParentFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, new HomeFragment())
-                .commit();
+        View.OnClickListener goHome = v -> navController.navigateUp();
 
         btnBack.setOnClickListener(goHome);
         btnCancel.setOnClickListener(goHome);
@@ -107,12 +117,7 @@ public class Add_New_Book extends Fragment {
             bookRepository.addBook(newBook);
 
             // Go to BookAddedFragment
-            getParentFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, BookAddedFragment.newInstance("", ""))
-                    .addToBackStack(null)
-                    .commit();
+            navController.navigate(R.id.action_add_New_Book_to_bookAddedFragment);
         });
-
-        return view;
     }
 }

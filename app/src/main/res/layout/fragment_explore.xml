@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F6F8FF"
+    android:background="@color/app_background"
     android:fillViewport="true">
 
     <LinearLayout
@@ -135,28 +135,22 @@
 
             <Button
                 android:id="@+id/btnExchange"
-                style="?attr/borderlessButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="44dp"
                 android:layout_marginEnd="6dp"
                 android:layout_weight="1"
-                android:backgroundTint="#4A63E7"
                 android:text="Exchange"
                 android:textAllCaps="false"
-                android:textColor="@android:color/white"
                 android:textStyle="bold" />
 
             <Button
                 android:id="@+id/btnDonate"
-                style="?attr/borderlessButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="44dp"
                 android:layout_marginStart="6dp"
                 android:layout_weight="1"
-                android:backgroundTint="#E8EBF7"
                 android:text="Donate"
                 android:textAllCaps="false"
-                android:textColor="@color/black"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -182,7 +176,7 @@
                 android:clipToPadding="false"
                 android:paddingBottom="16dp"
                 android:paddingTop="4dp"
-                android:nestedScrollingEnabled="false"
+                android.nestedScrollingEnabled="false"
                 android:scrollbars="vertical" />
 
             <TextView
