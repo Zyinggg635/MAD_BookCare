@@ -26,9 +26,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-// Added missing import
-import com.example.bookcare_qy.CommentAdapter;
-
 public class CommentDialogFragment extends DialogFragment {
 
     private static final String ARG_POST_ID = "postId";
@@ -69,7 +66,7 @@ public class CommentDialogFragment extends DialogFragment {
         rvComments.setAdapter(commentAdapter);
 
         if (postId != null) {
-            commentsRef = FirebaseDatabase.getInstance("https://bookcare-82eb6-default-rtdb.asia-southeast1.firebasedatabase.app").getReference("posts").child(postId).child("comments");
+            commentsRef = FirebaseDatabase.getInstance(Constants.FIREBASE_DATABASE_URL).getReference(Constants.PATH_POSTS).child(postId).child("comments");
             fetchComments();
         }
 

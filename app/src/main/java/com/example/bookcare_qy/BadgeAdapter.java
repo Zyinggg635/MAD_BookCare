@@ -1,6 +1,7 @@
 package com.example.bookcare_qy;
 
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,13 @@ public class BadgeAdapter extends RecyclerView.Adapter<BadgeAdapter.BadgeViewHol
         holder.tvBadgeName.setText(badge.getName());
         holder.ivBadgeIcon.setImageResource(R.drawable.ic_badge);
 
+        holder.tvBadgeLevel.setText(String.valueOf(badge.getLevel()));
+
+        // Change badge color based on level
+        GradientDrawable background = (GradientDrawable) holder.ivBadgeIcon.getBackground().mutate();
+        background.setColor(getLevelColor(badge.getLevel()));
+
+
         // Gray out the badge if the user hasn't earned it yet
         if (userPoints < badge.getPointsRequired()) {
             holder.itemView.setAlpha(0.5f);
@@ -55,11 +63,21 @@ public class BadgeAdapter extends RecyclerView.Adapter<BadgeAdapter.BadgeViewHol
     public static class BadgeViewHolder extends RecyclerView.ViewHolder {
         ImageView ivBadgeIcon;
         TextView tvBadgeName;
+        TextView tvBadgeLevel;
 
         public BadgeViewHolder(@NonNull View itemView) {
             super(itemView);
             ivBadgeIcon = itemView.findViewById(R.id.ivBadgeIcon);
             tvBadgeName = itemView.findViewById(R.id.tvBadgeName);
+            tvBadgeLevel = itemView.findViewById(R.id.tvBadgeLevel);
         }
+    }
+
+    private int getLevelColor(int level) {
+        float[] hsv = new float[3];
+        hsv[0] = (level * 20) % 360; // Hue
+        hsv[1] = 0.6f; // Saturation
+        hsv[2] = 0.8f; // Value
+        return Color.HSVToColor(hsv);
     }
 }

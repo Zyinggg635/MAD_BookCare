@@ -16,8 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Bookcare_qy">
         <activity
-            android:name=".MainActivity"
-            android:exported="true">
+            android:name=".SplashScreenActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Bookcare_qy">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,8 +26,13 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity_book_exchange" />
-        <activity android:name=".activity_book_donation" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="false">
+        </activity>
+
+        <activity android:name=".activity_book_exchange" android:theme="@style/Theme.Bookcare_qy.Blue" />
+        <activity android:name=".activity_book_donation" android:theme="@style/Theme.Bookcare_qy.Blue"/>
 
         <meta-data
             android:name="preloaded_fonts"

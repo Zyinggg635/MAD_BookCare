@@ -62,8 +62,37 @@ public class ForgotPasswordFragment extends Fragment {
         });
 
         binding.buttonSendResetLink.setOnClickListener(v -> {
-            // sendResetLink();
+            sendResetLink();
         });
+    }
+    
+    private void sendResetLink() {
+        String email = "";
+        if (binding.textInputLayoutEmail.getEditText() != null) {
+            email = binding.textInputLayoutEmail.getEditText().getText().toString().trim();
+        }
+        
+        if (email.isEmpty()) {
+            android.widget.Toast.makeText(getContext(), "Please enter your email address", android.widget.Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        // Note: Email template customization must be done in Firebase Console
+        // Go to Authentication > Templates > Password reset
+        // The template uses %DISPLAY_NAME% and %APP_NAME% placeholders
+        com.google.firebase.auth.FirebaseAuth.getInstance().sendPasswordResetEmail(email)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        android.widget.Toast.makeText(getContext(), "Password reset email sent!", android.widget.Toast.LENGTH_SHORT).show();
+                        Navigation.findNavController(requireView()).navigateUp();
+                    } else {
+                        String errorMessage = "Failed to send reset email";
+                        if (task.getException() != null) {
+                            errorMessage = task.getException().getMessage();
+                        }
+                        android.widget.Toast.makeText(getContext(), errorMessage, android.widget.Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     @Override

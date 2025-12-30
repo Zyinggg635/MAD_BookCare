@@ -7,13 +7,29 @@
     android:gravity="center_horizontal"
     android:padding="16dp">
 
-    <ImageView
-        android:id="@+id/ivBadgeIcon"
+    <FrameLayout
         android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:padding="8dp"
-        android:background="@drawable/badge_background_circle" 
-        tools:src="@drawable/ic_badge" />
+        android:layout_height="64dp">
+
+        <ImageView
+            android:id="@+id/ivBadgeIcon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp"
+            android:background="@drawable/badge_background_circle"
+            tools:src="@drawable/ic_badge" />
+
+        <TextView
+            android:id="@+id/tvBadgeLevel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            tools:text="1" />
+
+    </FrameLayout>
 
     <TextView
         android:id="@+id/tvBadgeName"

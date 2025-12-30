@@ -51,7 +51,11 @@ public class CommunityFragment extends Fragment implements PostAdapter.OnPostInt
         binding.rvPosts.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.rvPosts.setAdapter(postAdapter);
 
-        postsRef = FirebaseDatabase.getInstance("https://bookcare-82eb6-default-rtdb.asia-southeast1.firebasedatabase.app").getReference("posts");
+        postsRef = FirebaseDatabase.getInstance(Constants.FIREBASE_DATABASE_URL).getReference(Constants.PATH_POSTS);
+        
+        // Note: Activity feed functionality is now available
+        // The activity feed is populated when users donate/exchange books in BookDonationActivity/BookExchangeActivity
+        // You can add a separate RecyclerView or tab to display activity feed items if needed
 
         binding.fabNewPost.setOnClickListener(v -> showCreatePostDialog());
     }
@@ -144,7 +148,10 @@ public class CommunityFragment extends Fragment implements PostAdapter.OnPostInt
 
     @Override
     public void onCommentClicked(ForumPost post) {
-        Toast.makeText(getContext(), "Comment on: " + post.getTitle(), Toast.LENGTH_SHORT).show();
+        if (post.postId != null) {
+            CommentDialogFragment commentDialog = CommentDialogFragment.newInstance(post.postId);
+            commentDialog.show(getParentFragmentManager(), "CommentDialog");
+        }
     }
 
     @Override

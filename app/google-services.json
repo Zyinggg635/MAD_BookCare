@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "230206488560",
+    "firebase_url": "https://bookcare-82eb6-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "bookcare-82eb6",
     "storage_bucket": "bookcare-82eb6.firebasestorage.app"
   },

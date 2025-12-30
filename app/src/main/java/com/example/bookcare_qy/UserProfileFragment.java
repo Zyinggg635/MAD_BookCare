@@ -17,6 +17,8 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,7 +35,9 @@ public class UserProfileFragment extends Fragment implements RecommendationAdapt
     private SharedViewModel sharedViewModel;
     private RecommendationAdapter adapter;
     private DatabaseReference booksRef;
+    private DatabaseReference userRef;
     private ValueEventListener valueEventListener;
+    private ValueEventListener userEventListener;
 
     @Nullable
     @Override
@@ -68,8 +72,64 @@ public class UserProfileFragment extends Fragment implements RecommendationAdapt
         adapter = new RecommendationAdapter(new ArrayList<>(), this);
         recyclerView.setAdapter(adapter);
 
-        // Initialize Firebase Database reference
-        booksRef = FirebaseDatabase.getInstance("https://bookcare-82eb6-default-rtdb.asia-southeast1.firebasedatabase.app").getReference("books");
+        // Initialize Firebase Database references
+        booksRef = FirebaseDatabase.getInstance(Constants.FIREBASE_DATABASE_URL).getReference(Constants.PATH_BOOKS);
+        
+        // Load user data from Firebase
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            userRef = FirebaseDatabase.getInstance(Constants.FIREBASE_DATABASE_URL)
+                    .getReference(Constants.PATH_USERS)
+                    .child(currentUser.getUid());
+            loadUserData();
+        }
+    }
+    
+    private void loadUserData() {
+        if (userRef == null) return;
+        
+        userEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                if (user != null) {
+                    // Update SharedViewModel with user data
+                    sharedViewModel.name.setValue(user.getUsername() != null ? user.getUsername() : "");
+                    sharedViewModel.email.setValue(user.getEmail() != null ? user.getEmail() : "");
+                    sharedViewModel.phone.setValue(user.getPhone() != null ? user.getPhone() : "");
+                    sharedViewModel.location.setValue(user.getAddress() != null ? user.getAddress() : "");
+                    
+                    // Age and bio - show only if not empty
+                    if (user.getAge() != null && !user.getAge().isEmpty()) {
+                        sharedViewModel.age.setValue(user.getAge());
+                    } else {
+                        sharedViewModel.age.setValue("");
+                    }
+                    
+                    if (user.getBio() != null && !user.getBio().isEmpty()) {
+                        sharedViewModel.bio.setValue(user.getBio());
+                    } else {
+                        sharedViewModel.bio.setValue("");
+                    }
+                    
+                    // Update eco points display
+                    if (binding.textViewEcoPointsValue != null) {
+                        binding.textViewEcoPointsValue.setText(String.valueOf(user.getTotalPoints()));
+                    }
+                    
+                    // Update recommendations based on user's genre preference
+                    if (user.getGenrePreference() != null && !user.getGenrePreference().isEmpty()) {
+                        // Will be used in updateRecommendations
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle error
+            }
+        };
+        userRef.addValueEventListener(userEventListener);
     }
 
     @Override
@@ -102,19 +162,44 @@ public class UserProfileFragment extends Fragment implements RecommendationAdapt
         if (booksRef != null && valueEventListener != null) {
             booksRef.removeEventListener(valueEventListener);
         }
+        if (userRef != null && userEventListener != null) {
+            userRef.removeEventListener(userEventListener);
+        }
     }
 
     private void updateRecommendations(List<Book> allBooks) {
-        // Placeholder for user's favorite genres
-        List<String> userFavoriteGenres = Arrays.asList("Fantasy", "Sci-Fi");
-
-        List<Book> recommendedBooks = new ArrayList<>();
-        for (Book book : allBooks) {
-            if (book.getGenre() != null && userFavoriteGenres.contains(book.getGenre())) {
-                recommendedBooks.add(book);
-            }
+        // Get user's genre preference from SharedViewModel or load from Firebase
+        List<String> userFavoriteGenres = new ArrayList<>();
+        
+        // Try to get from current user data
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            DatabaseReference userGenreRef = FirebaseDatabase.getInstance(Constants.FIREBASE_DATABASE_URL)
+                    .getReference(Constants.PATH_USERS)
+                    .child(currentUser.getUid())
+                    .child("genrePreference");
+            
+            userGenreRef.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful() && task.getResult().getValue() != null) {
+                    String genrePreference = task.getResult().getValue(String.class);
+                    if (genrePreference != null && !genrePreference.isEmpty()) {
+                        List<Book> recommendedBooks = new ArrayList<>();
+                        for (Book book : allBooks) {
+                            if (book.getGenre() != null && book.getGenre().equals(genrePreference)) {
+                                recommendedBooks.add(book);
+                            }
+                        }
+                        adapter.submitList(recommendedBooks);
+                        return;
+                    }
+                }
+                // If no preference, show all books
+                adapter.submitList(allBooks);
+            });
+        } else {
+            // If not logged in, show all books
+            adapter.submitList(allBooks);
         }
-        adapter.submitList(recommendedBooks);
     }
 
     @Override

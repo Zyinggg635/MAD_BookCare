@@ -29,6 +29,7 @@ public class ExploreFragment extends Fragment {
     private List<Book> donationBooks = new ArrayList<>();
     private DatabaseReference booksRef;
     private ValueEventListener valueEventListener;
+    private boolean showingExchange = true; // Track current view
 
     @Nullable
     @Override
@@ -49,10 +50,30 @@ public class ExploreFragment extends Fragment {
                 navController.navigate(R.id.action_navigation_explore_to_add_New_Book));
 
         setupRecyclerView();
-        booksRef = FirebaseDatabase.getInstance("https://bookcare-82eb6-default-rtdb.asia-southeast1.firebasedatabase.app").getReference("books");
+        booksRef = FirebaseDatabase.getInstance(Constants.FIREBASE_DATABASE_URL).getReference(Constants.PATH_BOOKS);
 
-        binding.btnExchange.setOnClickListener(v -> showExchangeBooks());
-        binding.btnDonate.setOnClickListener(v -> showDonationBooks());
+        binding.btnExchange.setOnClickListener(v -> {
+            showingExchange = true;
+            showExchangeBooks();
+        });
+        binding.btnDonate.setOnClickListener(v -> {
+            showingExchange = false;
+            showDonationBooks();
+        });
+        
+        // Setup search functionality
+        binding.etSearch.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterBooks(s.toString());
+            }
+            
+            @Override
+            public void afterTextChanged(android.text.Editable s) {}
+        });
     }
 
     private void setupRecyclerView() {
@@ -112,6 +133,39 @@ public class ExploreFragment extends Fragment {
     private void showDonationBooks() {
         bookAdapter.updateBooks(donationBooks);
         binding.tvSectionTitle.setText("Available for Donation");
+    }
+    
+    private void filterBooks(String searchQuery) {
+        if (searchQuery.isEmpty()) {
+            // Show current category (exchange or donation)
+            if (showingExchange) {
+                showExchangeBooks();
+            } else {
+                showDonationBooks();
+            }
+            return;
+        }
+        
+        String query = searchQuery.toLowerCase().trim();
+        List<Book> filteredBooks = new ArrayList<>();
+        
+        List<Book> sourceList = showingExchange ? exchangeBooks : donationBooks;
+        for (Book book : sourceList) {
+            boolean matches = false;
+            if (book.getTitle() != null && book.getTitle().toLowerCase().contains(query)) {
+                matches = true;
+            } else if (book.getAuthor() != null && book.getAuthor().toLowerCase().contains(query)) {
+                matches = true;
+            } else if (book.getGenre() != null && book.getGenre().toLowerCase().contains(query)) {
+                matches = true;
+            }
+            
+            if (matches) {
+                filteredBooks.add(book);
+            }
+        }
+        
+        bookAdapter.updateBooks(filteredBooks);
     }
 
     @Override

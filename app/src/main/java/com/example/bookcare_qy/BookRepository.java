@@ -9,9 +9,9 @@ public class BookRepository {
     private final DatabaseReference transactionsRef;
 
     public BookRepository() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance("https://bookcare-82eb6-default-rtdb.asia-southeast1.firebasedatabase.app");
-        booksRef = database.getReference("books");
-        transactionsRef = database.getReference("point_transactions");
+        FirebaseDatabase database = FirebaseDatabase.getInstance(Constants.FIREBASE_DATABASE_URL);
+        booksRef = database.getReference(Constants.PATH_BOOKS);
+        transactionsRef = database.getReference(Constants.PATH_POINT_TRANSACTIONS);
     }
 
     public void addBook(Book book) {

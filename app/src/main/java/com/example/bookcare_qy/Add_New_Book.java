@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +22,8 @@ import androidx.navigation.Navigation;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class Add_New_Book extends Fragment {
 
@@ -48,6 +51,7 @@ public class Add_New_Book extends Fragment {
         btnBack.setOnClickListener(goHome);
         btnCancel.setOnClickListener(goHome);
 
+        RadioGroup radioGroupListing = view.findViewById(R.id.radioGroupListing);
         ConstraintLayout cardExchange = view.findViewById(R.id.cardExchange);
         ConstraintLayout cardDonate = view.findViewById(R.id.cardDonate);
         RadioButton rbExchange = cardExchange.findViewById(R.id.rbMain);
@@ -62,22 +66,37 @@ public class Add_New_Book extends Fragment {
         tvDonateTitle.setText("Donate");
         tvDonateSubtitle.setText("Give away for free");
 
+        // Track selection state manually (since RadioButtons are in included layouts)
+        final boolean[] isExchangeSelected = {true}; // Start with Exchange selected
+
+        // Set initial selection
         rbExchange.setChecked(true);
+        rbDonate.setChecked(false);
         if (forceExchange) {
             rbDonate.setEnabled(false);
-            cardDonate.setEnabled(false);
+            cardDonate.setClickable(false);
             cardDonate.setAlpha(0.4f);
         }
 
+        // Handle card clicks to toggle radio buttons
         cardExchange.setOnClickListener(v -> {
-            rbExchange.setChecked(true);
-            rbDonate.setChecked(false);
+            if (!forceExchange) {
+                isExchangeSelected[0] = true;
+                rbExchange.setChecked(true);
+                rbDonate.setChecked(false);
+            }
         });
 
         cardDonate.setOnClickListener(v -> {
-            rbDonate.setChecked(true);
-            rbExchange.setChecked(false);
+            if (!forceExchange) {
+                isExchangeSelected[0] = false;
+                rbDonate.setChecked(true);
+                rbExchange.setChecked(false);
+            }
         });
+        
+        // Store selection state for later use
+        final boolean[] finalSelection = isExchangeSelected;
 
         Button btnAddBook = view.findViewById(R.id.BtnListBook);
         btnAddBook.setOnClickListener(v -> {
@@ -90,7 +109,21 @@ public class Add_New_Book extends Fragment {
 
             String title = ((EditText) view.findViewById(R.id.ETBookTitle)).getText().toString();
             String author = ((EditText) view.findViewById(R.id.ETAuthor)).getText().toString();
-            String listingType = forceExchange ? "Exchange" : (rbExchange.isChecked() ? "Exchange" : "Donation");
+            
+            // Get selected listing type
+            String listingType;
+            if (forceExchange) {
+                listingType = "Exchange";
+            } else if (finalSelection[0]) {
+                listingType = "Exchange";
+            } else {
+                listingType = "Donation";
+            }
+            
+            // If Exchange, add credit to user
+            if ("Exchange".equals(listingType)) {
+                addCreditToUser(currentUser.getUid());
+            }
 
             Spinner conditionSpinner = view.findViewById(R.id.SPCondition);
             String condition = conditionSpinner.getSelectedItem() != null ? conditionSpinner.getSelectedItem().toString() : "";
@@ -102,6 +135,21 @@ public class Add_New_Book extends Fragment {
             bookRepository.addBook(newBook);
 
             navController.navigate(R.id.action_add_New_Book_to_bookAddedFragment);
+        });
+    }
+    
+    private void addCreditToUser(String userId) {
+        DatabaseReference userRef = FirebaseDatabase.getInstance(Constants.FIREBASE_DATABASE_URL)
+                .getReference(Constants.PATH_USERS)
+                .child(userId)
+                .child("credits");
+        
+        userRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Integer currentCredits = task.getResult().getValue(Integer.class);
+                if (currentCredits == null) currentCredits = 0;
+                userRef.setValue(currentCredits + 1);
+            }
         });
     }
 }

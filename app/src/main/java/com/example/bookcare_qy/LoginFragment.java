@@ -14,6 +14,16 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.example.bookcare_qy.databinding.FragmentLoginBinding;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class LoginFragment extends Fragment {
 
@@ -43,14 +53,67 @@ public class LoginFragment extends Fragment {
     }
 
     private void loginUser(NavController navController) {
-        String email = binding.editTextEmail.getText().toString();
-        String password = binding.editTextPassword.getText().toString();
+        String email = binding.editTextEmail.getText().toString().trim();
+        String password = binding.editTextPassword.getText().toString().trim();
 
         if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
             Toast.makeText(getContext(), "Email and password cannot be empty", Toast.LENGTH_SHORT).show();
-        } else {
-            navController.navigate(R.id.action_loginFragment_to_navigation_home);
+            return;
         }
+
+        // Show loading state (you can add a progress bar here)
+        binding.buttonLogin.setEnabled(false);
+
+        // Ensure Firebase is initialized
+        FirebaseManager.initializeFirebase();
+        
+        // Get Firebase Auth instance (auto-initializes from google-services.json)
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        auth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(requireActivity(), new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        binding.buttonLogin.setEnabled(true);
+                        
+                        if (task.isSuccessful()) {
+                            // Sign in success, fetch user data and navigate
+                            FirebaseUser firebaseUser = auth.getCurrentUser();
+                            if (firebaseUser != null) {
+                                fetchUserDataAndNavigate(navController, firebaseUser.getUid());
+                            } else {
+                                navController.navigate(R.id.action_loginFragment_to_navigation_home);
+                            }
+                        } else {
+                            // Sign in failed
+                            String errorMessage = "Login failed";
+                            if (task.getException() != null) {
+                                errorMessage = task.getException().getMessage();
+                            }
+                            Toast.makeText(getContext(), errorMessage != null ? errorMessage : "Invalid credentials", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    private void fetchUserDataAndNavigate(NavController navController, String userId) {
+        DatabaseReference userRef = FirebaseDatabase.getInstance(Constants.FIREBASE_DATABASE_URL)
+                .getReference(Constants.PATH_USERS)
+                .child(userId);
+        
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // User data fetched successfully (or doesn't exist yet)
+                // Navigate to home
+                navController.navigate(R.id.action_loginFragment_to_navigation_home);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Even if fetch fails, navigate to home
+                navController.navigate(R.id.action_loginFragment_to_navigation_home);
+            }
+        });
     }
 
     @Override

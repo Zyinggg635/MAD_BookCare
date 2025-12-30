@@ -12,6 +12,9 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.bookcare_qy.databinding.ActivityMainBinding;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
@@ -27,6 +30,10 @@ public class MainActivity extends AppCompatActivity {
         // --- END: BLUE MODE THEME LOGIC ---
 
         super.onCreate(savedInstanceState);
+        
+        // Initialize Firebase early (before setContentView)
+        // Firebase auto-initializes from google-services.json, but we set up database persistence here
+        FirebaseManager.initializeFirebase();
 
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
 

@@ -19,12 +19,21 @@ import androidx.navigation.Navigation;
 
 import com.example.bookcare_qy.SharedViewModel;
 import com.example.bookcare_qy.databinding.FragmentSettingsBinding;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class SettingsFragment extends Fragment {
 
     private FragmentSettingsBinding binding;
     private SharedViewModel sharedViewModel;
     private SharedPreferences sharedPreferences;
+    private DatabaseReference userRef;
+    private ValueEventListener userEventListener;
 
     @Nullable
     @Override
@@ -51,6 +60,9 @@ public class SettingsFragment extends Fragment {
         binding.rowMyBadges.setOnClickListener(v -> navController.navigate(R.id.action_navigation_settings_to_myBadgesFragment));
 
         binding.rowLogout.setOnClickListener(v -> {
+            // Sign out from Firebase
+            com.google.firebase.auth.FirebaseAuth.getInstance().signOut();
+
             NavGraph rootGraph = navController.getGraph();
             while (rootGraph.getParent() != null) {
                 rootGraph = rootGraph.getParent();
@@ -63,6 +75,9 @@ public class SettingsFragment extends Fragment {
 
             Toast.makeText(requireContext(), "Logged out successfully", Toast.LENGTH_SHORT).show();
         });
+
+        // Load user data from Firebase
+        loadUserData();
 
         // --- START: BLUE MODE LOGIC ---
         boolean isBlueMode = sharedPreferences.getBoolean("isBlueMode", false);
@@ -77,9 +92,39 @@ public class SettingsFragment extends Fragment {
         // --- END: BLUE MODE LOGIC ---
     }
 
+    private void loadUserData() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) return;
+
+        userRef = FirebaseDatabase.getInstance(Constants.FIREBASE_DATABASE_URL)
+                .getReference(Constants.PATH_USERS)
+                .child(currentUser.getUid());
+
+        userEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                if (user != null) {
+                    // Update SharedViewModel with user data (used by Settings UI)
+                    sharedViewModel.name.setValue(user.getUsername() != null ? user.getUsername() : "");
+                    sharedViewModel.email.setValue(user.getEmail() != null ? user.getEmail() : "");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle error
+            }
+        };
+        userRef.addValueEventListener(userEventListener);
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (userRef != null && userEventListener != null) {
+            userRef.removeEventListener(userEventListener);
+        }
         binding = null;
     }
 }
