@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import com.example.bookcare_qy.R;
 import com.example.bookcare_qy.databinding.FragmentLoginBinding;
 
 public class LoginFragment extends Fragment {
@@ -33,7 +32,7 @@ public class LoginFragment extends Fragment {
 
         final NavController navController = Navigation.findNavController(view);
 
-        // Navigation for Register, and Forgot Password
+        // Corrected navigation for Register
         binding.textViewRegister.setOnClickListener(v -> navController.navigate(R.id.action_loginFragment_to_registerFragment));
         binding.textViewForgotPassword.setOnClickListener(v -> navController.navigate(R.id.action_loginFragment_to_forgotPasswordFragment));
 

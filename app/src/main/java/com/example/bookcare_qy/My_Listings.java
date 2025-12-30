@@ -25,25 +25,22 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class My_Listings extends Fragment {
+public class My_Listings extends Fragment implements BookAdapter.OnItemClickListener, BookAdapter.OnDeleteClickListener {
 
     private static final String TAG = "My_Listings";
     private BookAdapter adapter;
     private TextView tvSubTitle;
     private List<Book> myListings = new ArrayList<>();
-
+    private BookRepository bookRepository;
     private DatabaseReference booksRef;
     private ValueEventListener valueEventListener;
 
     public My_Listings() { }
 
-    public static My_Listings newInstance(String param1, String param2) {
-        return new My_Listings();
-    }
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        bookRepository = new BookRepository();
         booksRef = FirebaseDatabase.getInstance("https://bookcare-82eb6-default-rtdb.asia-southeast1.firebasedatabase.app").getReference("books");
     }
 
@@ -68,15 +65,13 @@ public class My_Listings extends Fragment {
         btnAddBook.setOnClickListener(v -> navController.navigate(R.id.action_my_Listings_to_add_New_Book));
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new BookAdapter(myListings, count -> updateSubtitle());
+        adapter = new BookAdapter(myListings, this, this);
         recyclerView.setAdapter(adapter);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Log.d(TAG, "onStart: Attaching ValueEventListener");
-
         valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -87,9 +82,8 @@ public class My_Listings extends Fragment {
                         myListings.add(book);
                     }
                 }
-                adapter.notifyDataSetChanged();
+                adapter.setBooks(myListings);
                 updateSubtitle();
-                Log.d(TAG, "onDataChange: Fetched " + myListings.size() + " books.");
             }
 
             @Override
@@ -104,7 +98,6 @@ public class My_Listings extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        Log.d(TAG, "onStop: Removing ValueEventListener");
         if (booksRef != null && valueEventListener != null) {
             booksRef.removeEventListener(valueEventListener);
         }
@@ -114,5 +107,17 @@ public class My_Listings extends Fragment {
         if (tvSubTitle != null) {
             tvSubTitle.setText(myListings.size() + " books listed");
         }
+    }
+
+    @Override
+    public void onItemClick(Book book) {
+        My_ListingsDirections.ActionMyListingsToViewBookDetailFragment action =
+                My_ListingsDirections.actionMyListingsToViewBookDetailFragment(book);
+        Navigation.findNavController(requireView()).navigate(action);
+    }
+
+    @Override
+    public void onDeleteClick(String bookId) {
+        bookRepository.deleteBook(bookId);
     }
 }

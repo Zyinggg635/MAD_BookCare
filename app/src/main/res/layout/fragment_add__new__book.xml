@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="#BAC4A3">
+    android:background="?android:attr/colorBackground">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -53,11 +53,13 @@
             app:layout_constraintTop_toBottomOf="@+id/TVListABook" />
 
         <!-- Book Title -->
+
         <TextView
             android:id="@+id/TVBookTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
             android:fontFamily="@font/roboto_medium"
             android:text="Book Title"
             android:textSize="12sp"
@@ -208,12 +210,13 @@
         </RadioGroup>
 
         <!-- Description -->
+
         <TextView
             android:id="@+id/TVDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="24dp"
             android:fontFamily="@font/roboto_medium"
             android:text="Description"
             android:textSize="12sp"

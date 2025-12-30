@@ -13,25 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-//hahah
-
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link BookAddedFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class BookAddedFragment extends Fragment {
 
     public BookAddedFragment() {}
-
-    public static BookAddedFragment newInstance(String param1, String param2) {
-        BookAddedFragment fragment = new BookAddedFragment();
-        Bundle args = new Bundle();
-        args.putString("param1", param1);
-        args.putString("param2", param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     public static BookAddedFragment newInstance() {
         return new BookAddedFragment();
@@ -52,7 +36,7 @@ public class BookAddedFragment extends Fragment {
 
         Button btnBackHome = view.findViewById(R.id.btnBackToHome);
         btnBackHome.setOnClickListener(v -> 
-                navController.navigate(R.id.action_bookAddedFragment_to_navigation_home)
+                navController.navigate(R.id.action_bookAddedFragment_to_navigation_explore)
         );
     }
 }

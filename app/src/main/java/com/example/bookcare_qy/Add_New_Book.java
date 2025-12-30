@@ -10,6 +10,7 @@ import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,36 +19,19 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-//testing
-//wheweree i pushh
-public class Add_New_Book extends Fragment {
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
+public class Add_New_Book extends Fragment {
 
     private BookRepository bookRepository;
 
     public Add_New_Book() { }
 
-    public static Add_New_Book newInstance(String param1, String param2) {
-        return new Add_New_Book();
-    }
-
-    public static Add_New_Book newExchangeOnlyInstance() {
-        Add_New_Book fragment = new Add_New_Book();
-        Bundle args = new Bundle();
-        args.putBoolean("forceExchange", true);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container,
-                             Bundle savedInstanceState) {
-
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add__new__book, container, false);
-
         bookRepository = new BookRepository();
-
         return view;
     }
 
@@ -55,21 +39,15 @@ public class Add_New_Book extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final boolean forceExchange = getArguments() != null
-                && getArguments().getBoolean("forceExchange", false);
-
+        final boolean forceExchange = getArguments() != null && getArguments().getBoolean("forceExchange", false);
         NavController navController = Navigation.findNavController(view);
 
-        // --- BACK BUTTON ---
         ImageButton btnBack = view.findViewById(R.id.BtnLeftArrow);
         Button btnCancel = view.findViewById(R.id.BtnCancel);
-
         View.OnClickListener goHome = v -> navController.navigateUp();
-
         btnBack.setOnClickListener(goHome);
         btnCancel.setOnClickListener(goHome);
 
-        // Card layouts + radio buttons + labels
         ConstraintLayout cardExchange = view.findViewById(R.id.cardExchange);
         ConstraintLayout cardDonate = view.findViewById(R.id.cardDonate);
         RadioButton rbExchange = cardExchange.findViewById(R.id.rbMain);
@@ -84,14 +62,13 @@ public class Add_New_Book extends Fragment {
         tvDonateTitle.setText("Donate");
         tvDonateSubtitle.setText("Give away for free");
 
-        rbExchange.setChecked(true); // default
+        rbExchange.setChecked(true);
         if (forceExchange) {
             rbDonate.setEnabled(false);
             cardDonate.setEnabled(false);
             cardDonate.setAlpha(0.4f);
         }
 
-        // Make the whole card clickable
         cardExchange.setOnClickListener(v -> {
             rbExchange.setChecked(true);
             rbDonate.setChecked(false);
@@ -102,21 +79,28 @@ public class Add_New_Book extends Fragment {
             rbExchange.setChecked(false);
         });
 
-
-        // Add book button
         Button btnAddBook = view.findViewById(R.id.BtnListBook);
         btnAddBook.setOnClickListener(v -> {
+            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+            if (currentUser == null) {
+                Toast.makeText(getContext(), "You must be logged in to add a book.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            String ownerId = currentUser.getUid();
+
             String title = ((EditText) view.findViewById(R.id.ETBookTitle)).getText().toString();
             String author = ((EditText) view.findViewById(R.id.ETAuthor)).getText().toString();
-            String status = forceExchange ? "Exchange" : (rbExchange.isChecked() ? "Exchange" : "Donate");
+            String listingType = forceExchange ? "Exchange" : (rbExchange.isChecked() ? "Exchange" : "Donation");
 
             Spinner conditionSpinner = view.findViewById(R.id.SPCondition);
             String condition = conditionSpinner.getSelectedItem() != null ? conditionSpinner.getSelectedItem().toString() : "";
 
-            Book newBook = new Book(null, title, author, condition, status);
+            Spinner genreSpinner = view.findViewById(R.id.SPGenre);
+            String genre = genreSpinner.getSelectedItem() != null ? genreSpinner.getSelectedItem().toString() : "";
+
+            Book newBook = new Book(null, title, author, condition, listingType, genre, ownerId);
             bookRepository.addBook(newBook);
 
-            // Go to BookAddedFragment
             navController.navigate(R.id.action_add_New_Book_to_bookAddedFragment);
         });
     }

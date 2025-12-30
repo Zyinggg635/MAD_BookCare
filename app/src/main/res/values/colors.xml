@@ -7,10 +7,10 @@
     <color name="colorPrimary">#F7E4DA</color>
     <color name="colorPrimaryDark">#F7E4DA</color>
 
-    <!-- Add your app's background color here -->
+    <!-- Background Colors -->
     <color name="app_background">#BAC4A3</color>
-    <color name="button_color">#F7E4DA</color>
-    <color name="button_text_color">#FF000000</color>
-
     <color name="blue_mode_background">#B0DEF5</color>
+    
+    <color name="button_color">#7C8A67</color>
+    <color name="dialog_button_color">#7C8A67</color>
 </resources>

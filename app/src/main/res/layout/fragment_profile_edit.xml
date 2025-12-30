@@ -168,6 +168,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
+                android:backgroundTint="#7C8A67 "
                 android:text="Save Changes"
                 app:layout_constraintEnd_toEndOf="@+id/cardDetails"
                 app:layout_constraintStart_toStartOf="@+id/cardDetails"

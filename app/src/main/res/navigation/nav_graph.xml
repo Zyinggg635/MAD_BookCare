@@ -74,6 +74,10 @@
         <action
             android:id="@+id/action_navigation_home_to_ecoPointsFragment"
             app:destination="@id/ecoPointsFragment" />
+
+        <action
+            android:id="@+id/action_navigation_home_to_viewBookDetailFragment"
+            app:destination="@id/viewBookDetailFragment" />
     </fragment>
 
     <fragment
@@ -109,13 +113,32 @@
         <action
             android:id="@+id/action_navigation_settings_to_profileEditFragment"
             app:destination="@id/profileEditFragment" />
+        <action
+            android:id="@+id/action_navigation_settings_to_myBadgesFragment"
+            app:destination="@id/myBadgesFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/myBadgesFragment"
+        android:name="com.example.bookcare_qy.MyBadgesFragment"
+        android:label="My Badges"
+        tools:layout="@layout/fragment_my_badges" />
 
     <fragment
         android:id="@+id/ecoPointsFragment"
         android:name="com.example.bookcare_qy.EcoPointsFragment"
         android:label="Eco-Points"
-        tools:layout="@layout/fragment_eco_points" />
+        tools:layout="@layout/fragment_eco_points" >
+        <action
+            android:id="@+id/action_ecoPointsFragment_to_ecoPointsHistoryFragment"
+            app:destination="@id/ecoPointsHistoryFragment" />
+    </fragment>
+    
+    <fragment
+        android:id="@+id/ecoPointsHistoryFragment"
+        android:name="com.example.bookcare_qy.EcoPointsHistoryFragment"
+        android:label="Eco-Points History"
+        tools:layout="@layout/fragment_eco_points_history" />
 
     <fragment
         android:id="@+id/profileViewFragment"
@@ -148,6 +171,11 @@
             app:destination="@id/navigation_home"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_bookAddedFragment_to_navigation_explore"
+            app:destination="@id/navigation_explore"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/viewBookDetailFragment"
@@ -166,6 +194,9 @@
         <action
             android:id="@+id/action_my_Listings_to_add_New_Book"
             app:destination="@id/add_New_Book" />
+        <action
+            android:id="@+id/action_my_Listings_to_viewBookDetailFragment"
+            app:destination="@id/viewBookDetailFragment" />
     </fragment>
 
 </navigation>

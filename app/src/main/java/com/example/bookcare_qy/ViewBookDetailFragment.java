@@ -9,21 +9,29 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import java.util.Date;
+
 public class ViewBookDetailFragment extends Fragment {
 
     private Book book;
+    private BookRepository bookRepository;
 
     public ViewBookDetailFragment() {}
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        bookRepository = new BookRepository();
         if (getArguments() != null) {
             book = getArguments().getParcelable("book");
         }
@@ -36,11 +44,9 @@ public class ViewBookDetailFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_view_book_detail, container, false);
 
-        // Back button
         LinearLayout backNav = view.findViewById(R.id.back_navigation_area);
         backNav.setOnClickListener(v -> Navigation.findNavController(v).navigateUp());
 
-        // Populate book data
         if (book != null) {
             TextView tvTitle = view.findViewById(R.id.book_title);
             TextView tvAuthor = view.findViewById(R.id.book_author);
@@ -57,21 +63,18 @@ public class ViewBookDetailFragment extends Fragment {
                     ? book.getCondition() : (book.getGenre() != null ? book.getGenre() : "Available");
             tvCondition.setText(conditionText);
 
-            String description = "A great book in excellent condition. Perfect for reading and sharing with others.";
-            tvDescription.setText(description);
+            tvDescription.setText("A great book in excellent condition. Perfect for reading and sharing with others.");
+            tvOwnerName.setText("Unknown User");
+            tvOwnerPhone.setText("+60 12-345 6789");
 
-            String ownerName = "Unknown User";
-            tvOwnerName.setText(ownerName);
-            tvOwnerPhone.setText("+60 12-345 6789"); // Default phone, can be extended later
-
-            if ("Donate".equalsIgnoreCase(book.getGenre())) {
+            if ("Donation".equalsIgnoreCase(book.getListingType())) {
                 btnRequest.setText("Request Donation");
             } else {
                 btnRequest.setText("Request Exchange");
             }
 
             btnRequest.setOnClickListener(v -> {
-                if ("Exchange".equalsIgnoreCase(book.getGenre())) {
+                if ("Exchange".equalsIgnoreCase(book.getListingType())) {
                     handleExchangeRequest();
                 } else {
                     handleDonationRequest();
@@ -91,6 +94,7 @@ public class ViewBookDetailFragment extends Fragment {
         }
 
         if (creditManager.deductCredits(1)) {
+            logTransaction(1, "Exchange");
             showExchangeDoneDialog();
         } else {
             showInsufficientCreditsDialog();
@@ -98,7 +102,17 @@ public class ViewBookDetailFragment extends Fragment {
     }
 
     private void handleDonationRequest() {
+        logTransaction(10, "Donation");
         showExchangeDoneDialog();
+    }
+    
+    private void logTransaction(int points, String type) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            String userId = currentUser.getUid();
+            PointTransaction transaction = new PointTransaction(userId, points, type, new Date());
+            bookRepository.addPointTransaction(transaction);
+        }
     }
 
     private void showInsufficientCreditsDialog() {
@@ -114,13 +128,16 @@ public class ViewBookDetailFragment extends Fragment {
 
         View btnClose = dialog.findViewById(R.id.btn_close);
         TextView tvTitle = dialog.findViewById(R.id.text_title);
-        TextView tvMessage = dialog.findViewById(R.id.text_message);
+        TextView tvMessage = dialog.findViewById(R.id.text_message_line1);
         tvTitle.setText("Insufficient Credits");
 
         CreditManager creditManager = new CreditManager(requireContext());
         int currentCredits = creditManager.getCredits();
         tvMessage.setText("You need 1 credit to request an exchange. You currently have " +
                 currentCredits + " credit(s). Add a book for exchange to earn credits!");
+
+        dialog.findViewById(R.id.text_message_line2).setVisibility(View.GONE);
+        dialog.findViewById(R.id.phone_layout).setVisibility(View.GONE);
 
         btnClose.setOnClickListener(v -> dialog.dismiss());
         dialog.setCancelable(true);
@@ -141,9 +158,14 @@ public class ViewBookDetailFragment extends Fragment {
 
         View btnClose = dialog.findViewById(R.id.btn_close);
         TextView tvTitle = dialog.findViewById(R.id.text_title);
-        TextView tvMessage = dialog.findViewById(R.id.text_message);
+        TextView tvMessage1 = dialog.findViewById(R.id.text_message_line1);
+        TextView tvMessage2 = dialog.findViewById(R.id.text_message_line2);
+        TextView tvPhone = dialog.findViewById(R.id.text_phone_number);
+
         tvTitle.setText("Exchange Done");
-        tvMessage.setText("This exchange will post to the forum.");
+        tvMessage1.setText("This exchange will post to the forum.");
+        tvMessage2.setText("For more information, \nplease contact the owner at:");
+        tvPhone.setText("+60 12-345 6789");
 
         btnClose.setOnClickListener(v -> {
             dialog.dismiss();

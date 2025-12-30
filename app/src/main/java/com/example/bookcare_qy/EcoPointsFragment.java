@@ -63,6 +63,10 @@ public class EcoPointsFragment extends Fragment {
             Intent intent = new Intent(getActivity(), activity_book_donation.class);
             startActivity(intent);
         });
+
+        // View History Button Click Listener
+        binding.btnViewHistory.setOnClickListener(v -> 
+            navController.navigate(R.id.action_ecoPointsFragment_to_ecoPointsHistoryFragment));
     }
 
     @Override

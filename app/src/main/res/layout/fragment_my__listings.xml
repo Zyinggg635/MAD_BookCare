@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    android:background="#BAC4A3">
+    android:background="?android:attr/colorBackground">
 
     <TextView
         android:id="@+id/tvTitle"
@@ -48,12 +48,11 @@
 
     <Button
         android:id="@+id/btnAddBook"
+        style="@style/AppButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/white"
         android:fontFamily="@font/roboto_medium"
         android:text="+ Add New Book"
-        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

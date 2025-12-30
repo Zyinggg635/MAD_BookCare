@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#BAC4A3"
+    android:background="?android:attr/colorBackground"
     android:fitsSystemWindows="true">
 
     <!-- 1. Top Action Bar: Back Navigation and Title (Fixed) -->
@@ -103,7 +103,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Like New"
-                android:textSize="14sp"
+                android.textSize="14sp"
                 android:textColor="#388E3C"
                 android:fontFamily="sans-serif"
                 android:paddingStart="10dp"
@@ -220,19 +220,16 @@
     <!-- 3. Request Exchange Button -->
     <Button
         android:id="@+id/bottom_action_button"
+        style="@style/AppButton"
         android:layout_width="0dp"
         android:layout_height="56dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="84dp"
-        android:background="@drawable/rounded_button_primary_green"
-        android:fontFamily="sans-serif-medium"
         android:text="Request Exchange"
-        android:textColor="#FFFFFF"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

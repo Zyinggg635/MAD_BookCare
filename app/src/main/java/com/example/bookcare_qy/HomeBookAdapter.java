@@ -15,14 +15,15 @@ import java.util.List;
 
 public class HomeBookAdapter extends RecyclerView.Adapter<HomeBookAdapter.BookHolder> {
 
-    private final List<Book> books = new ArrayList<>();
+    private List<Book> books;
 
-    public HomeBookAdapter() {
+    public HomeBookAdapter(List<Book> books) {
+        this.books = new ArrayList<>(books);
     }
 
-    public void submitList(List<Book> newBooks) {
-        books.clear();
-        books.addAll(newBooks);
+    public void updateBooks(List<Book> newBooks) {
+        this.books.clear();
+        this.books.addAll(newBooks);
         notifyDataSetChanged();
     }
 
@@ -42,13 +43,12 @@ public class HomeBookAdapter extends RecyclerView.Adapter<HomeBookAdapter.BookHo
 
         holder.username.setVisibility(View.GONE);
 
-        holder.statusChip.setText(book.getGenre());
-        boolean isDonate = "Donate".equalsIgnoreCase(book.getGenre());
+        holder.statusChip.setText(book.getListingType());
+        boolean isDonate = "Donation".equalsIgnoreCase(book.getListingType());
         int color = ContextCompat.getColor(holder.statusChip.getContext(),
                 isDonate ? android.R.color.holo_red_dark : android.R.color.holo_green_dark);
         holder.statusChip.setTextColor(color);
 
-        // Set click listener to navigate to detail view
         holder.card.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
             bundle.putParcelable("book", book);

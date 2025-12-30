@@ -8,7 +8,6 @@
             type="com.example.bookcare_qy.SharedViewModel" />
     </data>
 
-    <!-- START: THIS IS THE FIX - The ScrollView now correctly wraps the ConstraintLayout -->
     <ScrollView
         android:id="@+id/settings_scrollview"
         android:layout_width="match_parent"
@@ -22,8 +21,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="32dp">
-
-            <!-- All your CardViews and TextViews go here, unchanged -->
 
             <!-- User Profile Summary Card -->
             <androidx.cardview.widget.CardView
@@ -161,6 +158,29 @@
                         android:text="Rewards &amp; Redeem"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
+                    
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:background="?android:attr/listDivider" />
+
+                    <TextView
+                        android:id="@+id/rowMyBadges"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:drawableStart="@drawable/ic_badge"
+                        android:drawableEnd="@drawable/ic_chevron_right"
+                        android:drawablePadding="16dp"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:padding="16dp"
+                        android:text="My Badges"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -242,5 +262,4 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
-    <!-- END: The ScrollView now correctly wraps the ConstraintLayout -->
 </layout>

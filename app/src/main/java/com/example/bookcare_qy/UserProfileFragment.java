@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class UserProfileFragment extends Fragment {
+public class UserProfileFragment extends Fragment implements RecommendationAdapter.OnItemClickListener {
 
     private com.example.bookcare_qy.databinding.FragmentUserProfileBinding binding;
     private SharedViewModel sharedViewModel;
@@ -65,7 +65,7 @@ public class UserProfileFragment extends Fragment {
         // --- Recommendations Setup ---
         RecyclerView recyclerView = binding.recyclerViewRecommendations;
         recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
-        adapter = new RecommendationAdapter(new ArrayList<>());
+        adapter = new RecommendationAdapter(new ArrayList<>(), this);
         recyclerView.setAdapter(adapter);
 
         // Initialize Firebase Database reference
@@ -115,6 +115,14 @@ public class UserProfileFragment extends Fragment {
             }
         }
         adapter.submitList(recommendedBooks);
+    }
+
+    @Override
+    public void onItemClick(Book book) {
+        // Navigate to the book detail fragment
+        UserProfileFragmentDirections.ActionNavigationHomeToViewBookDetailFragment action =
+                UserProfileFragmentDirections.actionNavigationHomeToViewBookDetailFragment(book);
+        Navigation.findNavController(requireView()).navigate(action);
     }
 
     @Override

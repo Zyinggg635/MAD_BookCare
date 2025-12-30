@@ -11,20 +11,6 @@
         android:clipToPadding="false"
         tools:context=".LoginFragment">
 
-        <!-- Back Arrow Button -->
-        <ImageButton
-            android:id="@+id/buttonBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Back"
-            android:padding="8dp"
-            android:src="@drawable/ic_arrow_back"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -54,7 +40,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <!-- START: NEW STATIC EMAIL LABEL -->
                 <TextView
                     android:id="@+id/labelEmail"
                     android:layout_width="wrap_content"
@@ -66,9 +51,7 @@
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textViewLoginTitle" />
-                <!-- END: NEW STATIC EMAIL LABEL -->
 
-                <!-- MODIFIED EMAIL INPUT: Removed the hint -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/emailLayout"
                     android:layout_width="0dp"
@@ -87,7 +70,6 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- START: NEW STATIC PASSWORD LABEL -->
                 <TextView
                     android:id="@+id/labelPassword"
                     android:layout_width="wrap_content"
@@ -99,18 +81,16 @@
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/emailLayout" />
-                <!-- END: NEW STATIC PASSWORD LABEL -->
 
-                <!-- MODIFIED PASSWORD INPUT: Removed the hint -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/passwordLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    app:passwordToggleEnabled="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/labelPassword">
+                    app:layout_constraintTop_toBottomOf="@+id/labelPassword"
+                    app:passwordToggleEnabled="true">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/editTextPassword"
@@ -123,10 +103,12 @@
 
                 <Button
                     android:id="@+id/buttonLogin"
+                    style="@style/AppButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
                     android:text="Login"
+                    android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/passwordLayout" />
@@ -137,18 +119,35 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="Forgot Password?"
+                    android:textColor="#F44336"
+                    android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="@+id/buttonLogin"
                     app:layout_constraintTop_toBottomOf="@+id/buttonLogin" />
 
-                <TextView
-                    android:id="@+id/textViewRegister"
+                <LinearLayout
+                    android:id="@+id/register_text_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
-                    android:text="Don't have an account? Register"
+                    android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewForgotPassword" />
+                    app:layout_constraintTop_toBottomOf="@+id/textViewForgotPassword">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Don't have an account? "
+                        android:textColor="@android:color/black" />
+
+                    <TextView
+                        android:id="@+id/textViewRegister"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Register"
+                        android:textColor="#AF6363"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

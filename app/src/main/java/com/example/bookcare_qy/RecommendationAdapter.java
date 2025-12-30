@@ -13,9 +13,15 @@ import java.util.List;
 public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAdapter.ViewHolder> {
 
     private List<Book> recommendations;
+    private OnItemClickListener listener;
 
-    public RecommendationAdapter(List<Book> recommendations) {
+    public interface OnItemClickListener {
+        void onItemClick(Book book);
+    }
+
+    public RecommendationAdapter(List<Book> recommendations, OnItemClickListener listener) {
         this.recommendations = recommendations;
+        this.listener = listener;
     }
 
     public void submitList(List<Book> newRecommendations) {
@@ -34,9 +40,7 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Book book = recommendations.get(position);
-        holder.title.setText(book.getTitle());
-        holder.author.setText(book.getAuthor());
-        holder.genre.setText(book.getGenre());
+        holder.bind(book, listener);
     }
 
     @Override
@@ -54,6 +58,13 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
             title = itemView.findViewById(R.id.textViewBookTitle);
             author = itemView.findViewById(R.id.textViewBookAuthor);
             genre = itemView.findViewById(R.id.textViewBookGenre);
+        }
+
+        public void bind(final Book book, final OnItemClickListener listener) {
+            title.setText(book.getTitle());
+            author.setText(book.getAuthor());
+            genre.setText(book.getGenre());
+            itemView.setOnClickListener(v -> listener.onItemClick(book));
         }
     }
 }

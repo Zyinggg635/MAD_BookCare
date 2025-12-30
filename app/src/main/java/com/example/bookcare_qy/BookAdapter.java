@@ -9,86 +9,77 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
-//haha
-
 public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder> {
 
     private List<Book> books;
-    public interface OnBooksChangedListener {
-        void onBooksChanged(int count);
-    }
-    private final OnBooksChangedListener listener;
+    private OnItemClickListener itemClickListener;
+    private OnDeleteClickListener deleteClickListener;
 
-    public BookAdapter(List<Book> books) {
-        this(books, null);
+    public interface OnItemClickListener {
+        void onItemClick(Book book);
     }
 
-    public BookAdapter(List<Book> books, OnBooksChangedListener listener) {
+    public interface OnDeleteClickListener {
+        void onDeleteClick(String bookId);
+    }
+
+    public BookAdapter(List<Book> books, OnItemClickListener itemClickListener, OnDeleteClickListener deleteClickListener) {
         this.books = books;
-        this.listener = listener;
-    }
-
-    public static class BookViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTitle, tvAuthor, tvStatus, tvViews, tvInterested;
-        ImageButton btnDelete;
-        public BookViewHolder(@NonNull View itemView) {
-            super(itemView);
-            tvTitle = itemView.findViewById(R.id.tvBookTitle);
-            tvAuthor = itemView.findViewById(R.id.tvBookAuthor);
-            tvStatus = itemView.findViewById(R.id.tvBookStatus);
-            tvViews = itemView.findViewById(R.id.tvViews);
-            tvInterested = itemView.findViewById(R.id.tvInterested);
-            btnDelete = itemView.findViewById(R.id.btnDelete);
-
-        }
+        this.itemClickListener = itemClickListener;
+        this.deleteClickListener = deleteClickListener;
     }
 
     @NonNull
     @Override
     public BookViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_book, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_book, parent, false);
         return new BookViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull BookViewHolder holder, int position) {
         Book book = books.get(position);
-        holder.tvTitle.setText(book.getTitle());
-        holder.tvAuthor.setText(book.getAuthor());
-        holder.tvStatus.setText(book.getGenre()); // FIX: Changed getStatus() to getGenre()
-        // holder.tvViews.setText(book.getViews() + " views"); // These methods no longer exist in Book.java
-        // holder.tvInterested.setText(book.getInterested() + " interested"); // These methods no longer exist in Book.java
+        holder.bind(book, itemClickListener);
 
         holder.btnDelete.setOnClickListener(v -> {
-            books.remove(position);          // remove from list
-            notifyItemRemoved(position);     // notify RecyclerView
-            notifyItemRangeChanged(position, books.size());
-            if (listener != null) {
-                listener.onBooksChanged(books.size());
+            if (deleteClickListener != null) {
+                deleteClickListener.onDeleteClick(book.getId());
             }
         });
     }
-
 
     @Override
     public int getItemCount() {
         return books.size();
     }
 
-    public void addBook(Book book) {
-        books.add(book);
-        notifyItemInserted(books.size() - 1);
-        if (listener != null) {
-            listener.onBooksChanged(books.size());
+    public static class BookViewHolder extends RecyclerView.ViewHolder {
+        TextView tvTitle, tvAuthor, tvStatus;
+        ImageButton btnDelete;
+
+        public BookViewHolder(@NonNull View itemView) {
+            super(itemView);
+            tvTitle = itemView.findViewById(R.id.tvBookTitle);
+            tvAuthor = itemView.findViewById(R.id.tvBookAuthor);
+            tvStatus = itemView.findViewById(R.id.tvBookStatus);
+            btnDelete = itemView.findViewById(R.id.btnDelete);
+        }
+
+        public void bind(final Book book, final OnItemClickListener listener) {
+            tvTitle.setText(book.getTitle());
+            tvAuthor.setText(book.getAuthor());
+            tvStatus.setText(book.getListingType());
+
+            itemView.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onItemClick(book);
+                }
+            });
         }
     }
 
-    public void setBooks(List<Book> updated) {
-        this.books = updated;
+    public void setBooks(List<Book> updatedBooks) {
+        this.books = updatedBooks;
         notifyDataSetChanged();
-        if (listener != null) {
-            listener.onBooksChanged(books.size());
-        }
     }
 }

@@ -46,12 +46,11 @@ public class SettingsFragment extends Fragment {
 
         final NavController navController = Navigation.findNavController(view);
 
-        // Your existing navigation logic...
         binding.rowEditProfile.setOnClickListener(v -> navController.navigate(R.id.action_navigation_settings_to_profileEditFragment));
         binding.cardUserProfile.setOnClickListener(v -> navController.navigate(R.id.action_navigation_settings_to_profileViewFragment));
-        
+        binding.rowMyBadges.setOnClickListener(v -> navController.navigate(R.id.action_navigation_settings_to_myBadgesFragment));
+
         binding.rowLogout.setOnClickListener(v -> {
-            // Programmatically find the root graph and navigate to its start destination
             NavGraph rootGraph = navController.getGraph();
             while (rootGraph.getParent() != null) {
                 rootGraph = rootGraph.getParent();
@@ -66,16 +65,13 @@ public class SettingsFragment extends Fragment {
         });
 
         // --- START: BLUE MODE LOGIC ---
-        // 1. Set the switch to the correct initial state.
         boolean isBlueMode = sharedPreferences.getBoolean("isBlueMode", false);
         binding.switchBlueMode.setChecked(isBlueMode);
 
-        // 2. Add a listener to the switch.
         binding.switchBlueMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("isBlueMode", isChecked);
             editor.apply();
-            // Recreate the activity to apply the new theme.
             requireActivity().recreate();
         });
         // --- END: BLUE MODE LOGIC ---

@@ -4,10 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#BAC4A3"
+    android:background="?android:attr/colorBackground"
     android:fillViewport="true"
-    tools:context=".BookExchangeActivity"
-    >
+    tools:context=".BookExchangeActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
