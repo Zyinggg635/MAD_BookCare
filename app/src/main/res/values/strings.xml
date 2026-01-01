@@ -5,5 +5,17 @@
     <string name="title_activity_home">Home</string>
     <string name="back_button_desc">Back</string>
     <string name="desc">Description</string>
+    
+    <!-- Calculation Details Strings -->
+    <string name="points_per_book_label">Points Per Book</string>
+    <string name="book_exchange_label">Book Exchange</string>
+    <string name="book_donation_label">Book Donation</string>
+    <string name="calculation_label">Calculation</string>
+    <string name="total_points_label">Total Points</string>
+    <string name="calculation_details_title">Calculation Details</string>
+    
+    <!-- Dynamic Format Strings -->
+    <string name="books_count_format">%d books</string>
+    <string name="points_calc_format">* %d points = </string>
 
 </resources>

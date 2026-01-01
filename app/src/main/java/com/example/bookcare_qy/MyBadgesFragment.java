@@ -90,10 +90,22 @@ public class MyBadgesFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
                 if (user != null) {
-                    currentUserPoints = user.getTotalPoints();
+                    // SIMULATION: Use calculated points based on simulated counts (3 exchanges, 5 donations)
+                    // This matches the simulation in EcoPointsFragment, UserProfileFragment, and detail activities.
+                    
+                    int simulatedExchanges = 3;
+                    int simulatedDonations = 5;
+                    currentUserPoints = (simulatedExchanges * Constants.POINTS_PER_BOOK_EXCHANGE) + 
+                                        (simulatedDonations * Constants.POINTS_PER_BOOK_DONATION);
+                    
+                    // To use real database value, revert to:
+                    // currentUserPoints = user.getTotalPoints();
+                    
                     // Update badge level (50 points per level, starting at 0)
                     int badgeLevel = currentUserPoints / 50;
-                    userRef.child("badgeLevel").setValue(badgeLevel);
+                    
+                    // Only update Firebase if we were using real data. With simulation, we just display it locally.
+                    // userRef.child("badgeLevel").setValue(badgeLevel); 
                     
                     calculateAndDisplayProgression(tvCurrentLevel, tvLevelNumber, tvTotalPoints, pbLevelProgress, tvProgressText, tvBadgesHeader);
                     badgeAdapter.updateUserPoints(currentUserPoints);

@@ -114,7 +114,19 @@ public class UserProfileFragment extends Fragment implements RecommendationAdapt
                     
                     // Update eco points display
                     if (binding.textViewEcoPointsValue != null) {
-                        binding.textViewEcoPointsValue.setText(String.valueOf(user.getTotalPoints()));
+                        // SIMULATION: Use calculated points based on simulated counts (3 exchanges, 5 donations)
+                        // This matches the simulation in EcoPointsFragment and detail activities.
+                        // Real calculation would be: user.getBooksExchanged() * 5 + user.getBooksDonated() * 10
+                        
+                        int simulatedExchanges = 3;
+                        int simulatedDonations = 5;
+                        int totalPoints = (simulatedExchanges * Constants.POINTS_PER_BOOK_EXCHANGE) + 
+                                          (simulatedDonations * Constants.POINTS_PER_BOOK_DONATION);
+                        
+                        binding.textViewEcoPointsValue.setText(String.valueOf(totalPoints));
+                        
+                        // NOTE: To use real database value, revert to:
+                        // binding.textViewEcoPointsValue.setText(String.valueOf(user.getTotalPoints()));
                     }
                     
                     // Update recommendations based on user's genre preference

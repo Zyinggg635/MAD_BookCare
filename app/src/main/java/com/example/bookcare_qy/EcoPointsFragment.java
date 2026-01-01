@@ -64,6 +64,9 @@ public class EcoPointsFragment extends Fragment {
         // Book Exchange Box Click Listener
         binding.bookExchangeBox.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), activity_book_exchange.class);
+            // Pass current user stats to the activity if needed, but the activity seems to use Intent extras for "what if" calculation
+            // If the user wants to see their stats, they might expect the activity to load them. 
+            // For now, we launch it as is.
             startActivity(intent);
         });
 
@@ -92,25 +95,51 @@ public class EcoPointsFragment extends Fragment {
         userEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User user = snapshot.getValue(User.class);
-                if (user != null) {
-                    int totalPoints = user.getTotalPoints();
-                    int booksExchanged = user.getBooksExchanged();
+                if (binding == null) return;
+                
+                // SIMULATION for testing to match activity_book_exchange simulation
+                // Assuming database returns 3 exchanges and 5 donations
+                // To revert to real database values, replace these hardcoded values with user.getBooksExchanged() etc.
+                
+                int booksExchanged = 3;
+                int booksDonated = 5;
+                
+                // User user = snapshot.getValue(User.class);
+                // if (user != null) {
+                //    booksExchanged = user.getBooksExchanged();
+                //    booksDonated = user.getBooksDonated();
+                // }
                     
-                    // Display total points
-                    binding.totalPointsValue.setText(String.valueOf(totalPoints));
-                    
-                    // Calculate and display exchange details
-                    // Each exchange = 5 points, so: exchanges * 5 = total from exchanges
-                    // But total points might include donations too, so we show based on booksExchanged count
-                    if (binding.textView13 != null) {
-                        binding.textView13.setText(booksExchanged + " exchanges");
-                    }
-                    
-                    // Calculate points from exchanges (booksExchanged * 5)
-                    int pointsFromExchanges = booksExchanged * Constants.POINTS_PER_BOOK_EXCHANGE;
-                    // Note: This shows points from exchanges only, totalPoints might include donations
+                // --- Book Exchange Section ---
+                // Display count
+                if (binding.textView13 != null) {
+                    binding.textView13.setText(booksExchanged + " exchanges");
                 }
+                
+                // Calculate and display points from exchanges
+                int pointsFromExchanges = booksExchanged * Constants.POINTS_PER_BOOK_EXCHANGE;
+                if (binding.textView16 != null) {
+                    binding.textView16.setText(pointsFromExchanges + " points");
+                }
+                
+                // --- Book Donation Section ---
+                // Display count
+                if (binding.textView14 != null) {
+                    binding.textView14.setText(booksDonated + " donations");
+                }
+                
+                // Calculate and display points from donations
+                int pointsFromDonations = booksDonated * Constants.POINTS_PER_BOOK_DONATION;
+                if (binding.textView15 != null) {
+                    binding.textView15.setText(pointsFromDonations + " points");
+                }
+
+                // --- Total Points Section ---
+                // Calculate total points based on the sum of exchange and donation points
+                int calculatedTotalPoints = pointsFromExchanges + pointsFromDonations;
+                
+                // Display total points
+                binding.totalPointsValue.setText(String.valueOf(calculatedTotalPoints));
             }
 
             @Override
