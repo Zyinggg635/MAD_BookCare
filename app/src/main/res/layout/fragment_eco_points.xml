@@ -270,21 +270,23 @@
                 app:layout_constraintHorizontal_bias="0.752"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-                
+
             <Button
                 android:id="@+id/btnViewHistory"
                 style="@style/Widget.AppCompat.Button.Borderless.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="32dp"
+                android:fontFamily="sans-serif-black"
                 android:text="View History"
-                android:textColor="@color/colorPrimary"
+                android:textColor="#1B621E"
+                android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bookDonationBox" 
-                app:layout_constraintVertical_bias="0.0"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="32dp"/>
+                app:layout_constraintTop_toBottomOf="@+id/bookDonationBox"
+                app:layout_constraintVertical_bias="0.0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
